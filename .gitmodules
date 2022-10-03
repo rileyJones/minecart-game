@@ -1,0 +1,3 @@
+[submodule "JIG"]
+	path = JIG
+	url = https://gitlab.encs.vancouver.wsu.edu/wallaces/JIG.git
