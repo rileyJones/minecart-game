@@ -5,6 +5,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import states.GameState;
+
 public class MinecartGame extends StateBasedGame {
 
 	public MinecartGame(String name) {
@@ -14,8 +16,7 @@ public class MinecartGame extends StateBasedGame {
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		// TODO Auto-generated method stub
-		
+		addState(new GameState());
 	}
 	
 	public static void main(String[] args) {
