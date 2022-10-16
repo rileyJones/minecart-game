@@ -5,9 +5,7 @@ import java.util.NoSuchElementException;
 public abstract class Component {
 	protected Entity owner;
 	private boolean open = false;
-	protected Component(Entity owner) {
-		this.owner = owner;
-	}
+	protected Component() {}
 	public Component getValue() {
 		Component parentValue = getParentValue(owner);
 		if(parentValue != null) {

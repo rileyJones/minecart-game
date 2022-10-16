@@ -3,7 +3,7 @@ package ecs;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
-public abstract class OneBodySystem {
+public abstract class OneBodySystem implements ECS_System {
 	public void updateWorld(Entity world, GameContainer container, StateBasedGame game, int delta) {
 		if(test(world)) {
 			update(world, container, game, delta);

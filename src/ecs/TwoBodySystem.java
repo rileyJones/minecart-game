@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
-public abstract class TwoBodySystem {
+public abstract class TwoBodySystem implements ECS_System {
 	public void updateWorld(Entity world, GameContainer container, StateBasedGame game, int delta) {
 		ArrayList<Entity> validEntities = new ArrayList<Entity>();
 		getValidEntities(world, validEntities);
