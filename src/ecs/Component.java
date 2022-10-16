@@ -14,12 +14,19 @@ public abstract class Component {
 			return this.clone().open();
 		}
 	}
+	
+	public Component getInternalValue() {
+		return this.clone().open();
+	}
+	
 	public Component getValueDifference(Component other) {
 		return this.clone().anticombine(other).open();
 	}
+	
 	void setOwner(Entity owner) {
 		this.owner = owner;
 	}
+	
 	private Component getParentValue(Entity e) {
 		if(e.parent != null) {
 			Result<Component, NoSuchElementException> parentComponent = e.parent.getTraitByID(this.ID());
@@ -42,6 +49,7 @@ public abstract class Component {
 	protected abstract Component combine(Component other);
 	protected abstract Component anticombine(Component other);
 	public abstract Component modify(Component other);
+	public abstract Component set(Component other);
 	public abstract TRAIT ID();
 	public abstract Component clone();
 }

@@ -11,18 +11,10 @@ import states.GameState;
 
 public class MinecartGame extends StateBasedGame {
 
-	public static final int KEY_LEFT  = 0;
-	public static final int KEY_DOWN  = 1;
-	public static final int KEY_UP    = 2;
-	public static final int KEY_RIGHT = 3;
-	public static final int KEY_B     = 4;
-	public static final int KEY_A     = 5;
-	public static final int KEY_PAUSE = 6;
 	public Controller controller;
 	
 	public MinecartGame(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
