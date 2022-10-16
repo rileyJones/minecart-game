@@ -39,6 +39,13 @@ public class Box extends Component{
 		box = new Rectangle(otherBox.getX(), otherBox.getY(), otherBox.getWidth(), otherBox.getHeight());
 		return this;
 	}
+	
+	@Override
+	public Component set(Component other) {
+		Rectangle otherBox = ((Box)other).box;
+		box = new Rectangle(otherBox.getX(), otherBox.getY(), otherBox.getWidth(), otherBox.getHeight());
+		return this;
+	}
 
 	@Override
 	public TRAIT ID() {

@@ -8,17 +8,17 @@ import ecs.Component;
 import ecs.Result;
 import ecs.TRAIT;
 
-public class Position extends Component{
+public class Velocity extends Component{
+
+	private Vector2f vel;
 	
-	private Vector2f pos;
-	
-	public Position(float x, float y) {
-		pos = new Vector2f(x, y);
+	public Velocity(float x, float y) {
+		vel = new Vector2f(x, y);
 	}
 
-	public Result<Vector2f, NoPermissionException> getPos() {
+	public Result<Vector2f, NoPermissionException> getVel() {
 		if(isOpen()) {
-			return new Result<Vector2f, NoPermissionException>(pos);
+			return new Result<Vector2f, NoPermissionException>(vel);
 		} else {
 			return new Result<Vector2f, NoPermissionException>(new NoPermissionException());
 		}
@@ -26,36 +26,37 @@ public class Position extends Component{
 	
 	@Override
 	protected Component combine(Component other) {
-		pos.add(((Position)other).pos);
+		vel.add(((Velocity)other).vel);
 		return this;
 	}
 
 	@Override
 	protected Component anticombine(Component other) {
-		pos.sub(((Position)other).pos);
+		vel.sub(((Velocity)other).vel);
 		return this;
 	}
 
 	@Override
 	public Component modify(Component other) {
-		pos.add(((Position)other).pos);
+		vel.add(((Velocity)other).vel);
 		return this;
 	}
 	
 	@Override
 	public Component set(Component other) {
-		pos.x = (((Position)other).pos).x;
-		pos.y = (((Position)other).pos).y;
+		vel.x = ((Velocity)other).vel.x;
+		vel.y = ((Velocity)other).vel.y;
 		return this;
 	}
 
 	@Override
 	public TRAIT ID() {
-		return TRAIT.POSITION;
+		return TRAIT.VELOCITY;
 	}
 
 	@Override
 	public Component clone() {
-		return new Position(pos.x, pos.y);
+		return new Velocity(vel.x, vel.y);
 	}
+
 }

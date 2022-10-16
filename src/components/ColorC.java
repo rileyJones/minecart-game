@@ -39,6 +39,12 @@ public class ColorC extends Component {
 		color = ((ColorC)other).color;
 		return this;
 	}
+	
+	@Override
+	public Component set(Component other) {
+		color = ((ColorC)other).color;
+		return this;
+	}
 
 	@Override
 	public TRAIT ID() {

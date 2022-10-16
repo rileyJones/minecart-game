@@ -7,8 +7,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.Player;
 import components.*;
 import ecs.*;
+import game.MinecartGame;
 import systems.*;
 
 public class GameState extends BasicGameState {
@@ -23,7 +25,9 @@ public class GameState extends BasicGameState {
 		world.addChild(new Entity(new Component[] {
 			new Position(100,100),
 			new Box(-10,-10,20,20),
-			new ColorC(Color.blue)
+			new ColorC(Color.blue),
+			new Player(((MinecartGame)game).controller),
+			new Velocity(0,0)
 		}).addChild(new Entity(new Component[] {
 			new Position(200,100),
 			new Box(-10,-10,40,20),
@@ -31,6 +35,8 @@ public class GameState extends BasicGameState {
 		})));
 		
 		systems = new ECS_System[] {
+			new AISystem(),
+			new VelocitySystem()
 		};
 		renderer = new DebugDraw();
 	}
