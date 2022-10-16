@@ -1,6 +1,7 @@
 package ecs;
 
 public enum TRAIT {
-	VELOCITY,
-	TEAM
+	POSITION,
+	BOX,
+	COLOR
 }

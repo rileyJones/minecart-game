@@ -69,9 +69,16 @@ public class Entity {
 		return parent;
 	}
 	
-	public Entity[] getChildren() {
-		return (Entity[]) children.toArray();
+	public Entity addChild(Entity child) {
+		children.add(child);
+		child.setParent(this);
+		return this;
 	}
+	
+	public Entity[] getChildren() {
+		return children.toArray(new Entity[children.size()]);
+	}
+	
 	public Result<Component,NoSuchElementException> getTraitByID(TRAIT ID) {
 		for(Component c: traits) {
 			if(c.ID() == ID) {
