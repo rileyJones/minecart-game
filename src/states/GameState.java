@@ -24,6 +24,7 @@ public class GameState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		world = new Entity(new Component[] {});
+		
 		world.addChild(new Entity(new Component[] {
 			new Position(100,100),
 			new Box(-10,-10,20,20),
@@ -35,6 +36,7 @@ public class GameState extends BasicGameState {
 			new Box(-10,-10,40,20),
 			new ColorC(Color.red)	
 		})));
+		
 		world.addChild(new Entity(new Component[] {
 			new Position(0,0),
 			new TileMap(24, 24, 37, new int[] {
@@ -68,10 +70,19 @@ public class GameState extends BasicGameState {
 					2,9,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,5,5 ,5 ,5 ,5,5,5,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,8,2,
 			})
 		}));
+		world.addChild(new Entity(new Component[] {
+				new Position(150,100),
+				new Box(-10,-10,20,20),
+				new ColorC(Color.red),
+				new Velocity(0,0)
+		}));
+		
 		
 		systems = new ECS_System[] {
 			new AISystem(),
-			new VelocitySystem()
+			new VelocitySystem(),
+			new TileMapCollision(),
+			new CollideClipSystem()
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(),

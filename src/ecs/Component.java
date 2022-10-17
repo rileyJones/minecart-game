@@ -28,7 +28,7 @@ public abstract class Component {
 	}
 	
 	private Component getParentValue(Entity e) {
-		if(e.parent != null) {
+		if(e != null && e.parent != null) {
 			Result<Component, NoSuchElementException> parentComponent = e.parent.getTraitByID(this.ID());
 			if(parentComponent.is_ok()) {
 				return parentComponent.unwrap().getValue().open();
