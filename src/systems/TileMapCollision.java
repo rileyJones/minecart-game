@@ -42,17 +42,43 @@ public class TileMapCollision extends TwoBodySystem {
 				secondaryTileMap.getTileWidth() * secondaryTileMap.getWidth(), 
 				secondaryTileMap.getTileHeight() * secondaryTileMap.getHeight()
 		);
+		int minX = (int) Math.max(0, Math.floor((primaryRect.getMinX() - secondaryRect.getX()) / secondaryTileMap.getTileWidth()));
+		int maxX = (int) Math.min(secondaryTileMap.getWidth(), Math.ceil((primaryRect.getMaxX() - secondaryRect.getX()) / secondaryTileMap.getTileWidth()));
+		int minY = (int) Math.max(0, Math.floor((primaryRect.getMinY() - secondaryRect.getY()) / secondaryTileMap.getTileHeight()));
+		int maxY = (int) Math.min(secondaryTileMap.getHeight(), Math.ceil((primaryRect.getMaxY() - secondaryRect.getY()) / secondaryTileMap.getTileHeight()));
 		
-		for(int x = (int) Math.max(0, Math.floor((primaryRect.getMinX() - secondaryRect.getX()) / secondaryTileMap.getTileWidth()));
-				x < Math.min(secondaryTileMap.getWidth(), Math.ceil((primaryRect.getMaxX() - secondaryRect.getX()) / secondaryTileMap.getTileWidth()));
-				x++) {
-			for(int y = (int) Math.max(0, Math.floor((primaryRect.getMinY() - secondaryRect.getY()) / secondaryTileMap.getTileHeight()));
-					y < Math.min(secondaryTileMap.getHeight(), Math.ceil((primaryRect.getMaxY() - secondaryRect.getY()) / secondaryTileMap.getTileHeight()));
-					y++) {
+		Vector2f primaryVelVec = ((Velocity)primaryVel.getValue()).getVel().unwrap(); 
+		
+		int startX;
+		int endX;
+		int dirX;
+		int startY;
+		int endY;
+		int dirY;
+		if(primaryVelVec.x >= 0) {
+			startX = minX;
+			endX = maxX;
+			dirX = 1;
+		} else {
+			startX = maxX-1;
+			endX = minX-1;
+			dirX = -1;
+		}
+		if(primaryVelVec.y >= 0) {
+			startY = minY;
+			endY = maxY;
+			dirY = 1;
+		} else {
+			startY = maxY-1;
+			endY = minY-1;
+			dirY = -1;
+		}
+		for(int x = startX; x != endX; x+=dirX) {
+			for(int y = startY; y != endY; y+=dirY) {
 				switch(secondaryTileMap.getTile(x, y)) {
 					case BLOCK:
 						Box secondaryBox = new Box(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
-						Physics.doBoxClip(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, new Velocity(0,0), delta);
+						Physics.doSimpleCollision(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, new Velocity(0,0), delta);
 						break;
 					case BUTTON:
 						break;
