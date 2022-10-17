@@ -5,5 +5,6 @@ public enum TRAIT {
 	BOX,
 	COLOR, 
 	VELOCITY,
-	AI
+	AI,
+	TILEMAP
 }
