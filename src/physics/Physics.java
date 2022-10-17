@@ -32,6 +32,8 @@ public class Physics {
 		Velocity velDif = (Velocity) bVel.getValueDifference(aVel);
 		Vector2f velDifVec = ((Velocity)velDif.getValue()).getVel().unwrap();
 		
+		if(velDifVec.lengthSquared() == 0) return 0;
+		
 		float tempDelta = Physics.getBoxCollideDelta(aRect, new Vector2f(0,0), bRect, velDifVec);
 		
 		Physics.doVelocity(aPos, aVel, 0, 0, tempDelta);

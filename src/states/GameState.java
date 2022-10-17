@@ -39,6 +39,7 @@ public class GameState extends BasicGameState {
 		
 		world.addChild(new Entity(new Component[] {
 			new Position(0,0),
+			new Velocity(-0.01f,0.0f),
 			new TileMap(24, 24, 37, new int[] {
 					1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1 ,1 ,1 ,1,1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1,
 					1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1 ,1 ,1 ,1,1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1,
