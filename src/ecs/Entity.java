@@ -70,8 +70,7 @@ public class Entity {
 	}
 	
 	public Entity addChild(Entity child) {
-		children.add(child);
-		child.parent = this;
+		child.setParent(this);
 		return this;
 	}
 	
