@@ -22,6 +22,8 @@ public class GameState extends BasicGameState {
 	ECS_System[] systems;
 	RenderSystem[] renderers;
 	
+	Entity spawnGroup;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		world = new Entity(new Component[] {});
@@ -71,27 +73,32 @@ public class GameState extends BasicGameState {
 		Entity enemyPrototype = new Entity(new Component[] {
 			new Position(0,0),
 			new Box(-10,-10,20,20),
-			new ColorC(Color.orange),
+			new ColorC(Color.red),
 			new Enemy(player)
 		});
+		spawnGroup = new Entity(new Component[] {
+			new Position(0,0)
+		});
 		world.addChild(new Entity(new Component[] {
+			
 		}).addChild(new Entity(new Component[] {
 			new Position(12+12*24, 12+20*24),
-			new Spawner(enemyPrototype)
+			new Spawner(enemyPrototype, spawnGroup)
 		})).addChild(new Entity(new Component[] {
 			new Position(12+24*24, 12+12*24),
-			new Spawner(enemyPrototype)
+			new Spawner(enemyPrototype, spawnGroup)
 		})).addChild(new Entity(new Component[] {
 			new Position(12+24*24, 12+20*24),
-			new Spawner(enemyPrototype)
+			new Spawner(enemyPrototype, spawnGroup)
 		})).addChild(new Entity(new Component[] {
 			new Position(12+12*24, 12+12*24),
-			new Spawner(enemyPrototype)
-		})));
+			new Spawner(enemyPrototype, spawnGroup)
+		})).addChild(spawnGroup));
 		systems = new ECS_System[] {
 			new AISystem(),
 			new VelocitySystem(),
-			new TileMapCollision()
+			new TileMapCollision(),
+			new SpawnEnemiesSystem(spawnGroup)
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(),
@@ -112,6 +119,7 @@ public class GameState extends BasicGameState {
 		for(ECS_System s: systems) {
 			s.updateWorld(world, container, game, delta);
 		}
+		//System.out.println(((Position)(spawnGroup.getChildren()[0].getTraitByID(TRAIT.POSITION).unwrap().getValue())).getPos().unwrap().x);
 	}
 
 	@Override

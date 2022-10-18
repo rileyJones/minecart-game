@@ -1,0 +1,47 @@
+package systems;
+
+import java.util.NoSuchElementException;
+
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.state.StateBasedGame;
+
+import components.Spawner;
+import ecs.Component;
+import ecs.Entity;
+import ecs.OneBodySystem;
+import ecs.Result;
+import ecs.TRAIT;
+
+public class SpawnEnemiesSystem extends OneBodySystem{
+
+	Entity spawnGroup;
+	
+	public SpawnEnemiesSystem(Entity spawnGroup) {
+		this.spawnGroup = spawnGroup;
+	}
+
+	@Override
+	protected void update(Entity e, GameContainer container, StateBasedGame game, int delta) {
+		Result<Component, NoSuchElementException> spawnerTraitR = e.getTraitByID(TRAIT.SPAWNER);
+		if(spawnerTraitR.is_ok()) {
+			Spawner eSpawner = (Spawner) spawnerTraitR.unwrap();
+			eSpawner.spawn();
+		}
+	}
+
+	@Override
+	protected boolean test(Entity e) {
+		if(spawnGroup.getChildren().length == 0) {
+			Result<Component, NoSuchElementException> spawnerTraitR = e.getTraitByID(TRAIT.SPAWNER);
+			if(spawnerTraitR.is_ok()) {
+				Spawner eSpawner = (Spawner) spawnerTraitR.unwrap();
+				if(eSpawner.getSpawnGroup() == spawnGroup) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+
+}
