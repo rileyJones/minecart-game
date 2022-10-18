@@ -62,5 +62,9 @@ public class Player extends AI{
 	public Component clone() {
 		return new Player(controller);
 	}
-
+	
+	@Override
+	public AI_TYPE getType() {
+		return AI_TYPE.PLAYER;
+	}
 }

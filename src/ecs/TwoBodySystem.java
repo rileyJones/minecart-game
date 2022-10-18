@@ -13,7 +13,7 @@ public abstract class TwoBodySystem implements ECS_System {
 		ArrayList<Tuple<Entity,Entity>> windows = new ArrayList<Tuple<Entity,Entity>>();
 		for(Entity a: primaryEntities) {
 			for(Entity b: secondaryEntities) {
-				if(test(a,b)) {
+				if(test(a,b) && a != b) {
 					windows.add(new Tuple<Entity,Entity>(a,b));
 				}
 			}
@@ -25,7 +25,8 @@ public abstract class TwoBodySystem implements ECS_System {
 	private void getValidEntities(Entity world, ArrayList<Entity> primaryEntities, ArrayList<Entity> secondaryEntities) {
 		if(testPrimary(world)) {
 			primaryEntities.add(world);
-		} else if(testSecondary(world)) {
+		}
+		if(testSecondary(world)) {
 			secondaryEntities.add(world);
 		}
 		for(Entity e: world.getChildren()) {

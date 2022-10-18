@@ -3,6 +3,7 @@ package components;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.AI_TYPE;
 import ecs.Component;
 import ecs.TRAIT;
 
@@ -34,5 +35,7 @@ public abstract class AI extends Component{
 	public TRAIT ID() {
 		return TRAIT.AI;
 	}
+	
+	public abstract AI_TYPE getType();
 
 }

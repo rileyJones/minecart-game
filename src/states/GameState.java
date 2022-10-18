@@ -74,7 +74,8 @@ public class GameState extends BasicGameState {
 			new Position(0,0),
 			new Box(-10,-10,20,20),
 			new ColorC(Color.red),
-			new Enemy(player)
+			new Enemy(player, 0.03f),
+			new Velocity(0,0)
 		});
 		spawnGroup = new Entity(new Component[] {
 			new Position(0,0)
@@ -97,6 +98,7 @@ public class GameState extends BasicGameState {
 		systems = new ECS_System[] {
 			new AISystem(),
 			new VelocitySystem(),
+			new CollideClipSystem(),
 			new TileMapCollision(),
 			new SpawnEnemiesSystem(spawnGroup)
 		};

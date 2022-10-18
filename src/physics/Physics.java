@@ -103,23 +103,56 @@ public class Physics {
 		DIRECTION boxCollideDirection = Physics.getBoxCollideDirection(aRect, new Vector2f(0,0), bRect, velDifVec);
 		switch(boxCollideDirection) {
 			case X_MINUS:
-				Physics.doVelocity(aPos, new Velocity(0,0), 0, aVelVec.y, tempDelta);
-				Physics.doVelocity(bPos, new Velocity(0,0), 0, bVelVec.y, tempDelta);
+				Physics.doVelocity(aPos, new Velocity(0,0), Math.max(aVelVec.x,bVelVec.x), aVelVec.y, tempDelta);
+				Physics.doVelocity(bPos, new Velocity(0,0), Math.max(aVelVec.x,bVelVec.x), bVelVec.y, tempDelta);
 				break;
 			case X_PLUS:
-				Physics.doVelocity(aPos, new Velocity(0,0), 0, aVelVec.y, tempDelta);
-				Physics.doVelocity(bPos, new Velocity(0,0), 0, bVelVec.y, tempDelta);
+				Physics.doVelocity(aPos, new Velocity(0,0), Math.min(aVelVec.x,bVelVec.x), aVelVec.y, tempDelta);
+				Physics.doVelocity(bPos, new Velocity(0,0), Math.min(aVelVec.x,bVelVec.x), bVelVec.y, tempDelta);
 				break;
 			case Y_MINUS:
-				Physics.doVelocity(aPos, new Velocity(0,0), aVelVec.x, 0, tempDelta);
-				Physics.doVelocity(bPos, new Velocity(0,0), bVelVec.x, 0, tempDelta);
+				Physics.doVelocity(aPos, new Velocity(0,0), aVelVec.x, Math.max(aVelVec.y,bVelVec.y), tempDelta);
+				Physics.doVelocity(bPos, new Velocity(0,0), bVelVec.x, Math.max(aVelVec.y,bVelVec.y), tempDelta);
 				break;
 			case Y_PLUS:
-				Physics.doVelocity(aPos, new Velocity(0,0), aVelVec.x, 0, tempDelta);
-				Physics.doVelocity(bPos, new Velocity(0,0), bVelVec.x, 0, tempDelta);
+				Physics.doVelocity(aPos, new Velocity(0,0), aVelVec.x, Math.min(aVelVec.y,bVelVec.y), tempDelta);
+				Physics.doVelocity(bPos, new Velocity(0,0), bVelVec.x, Math.min(aVelVec.y,bVelVec.y), tempDelta);
 				break;
 			default:
 				break;	
+		}
+	}
+	
+	public static void doPushCollision(Position aPos, Box aBox, Velocity aVel, Position bPos, Box bBox, Velocity bVel, float delta) {
+		Vector2f aPosVec = ((Position)aPos.getValue()).getPos().unwrap();
+		Rectangle aRect = ((Box)aBox.getValue()).getBox().unwrap();
+		
+		aRect.setX(aRect.getX()+aPosVec.x);
+		aRect.setY(aRect.getY()+aPosVec.y);
+		
+		Vector2f bPosVec = ((Position)bPos.getValue()).getPos().unwrap();
+		Rectangle bRect = ((Box)bBox.getValue()).getBox().unwrap();
+		
+		bRect.setX(bRect.getX()+bPosVec.x);
+		bRect.setY(bRect.getY()+bPosVec.y);
+		
+		Velocity velDif = (Velocity) bVel.getValueDifference(aVel);
+		Vector2f velDifVec = ((Velocity)velDif.getValue()).getVel().unwrap();
+		
+		if(!aRect.intersects(bRect)) return;
+		if(velDifVec.lengthSquared() == 0) return;
+		
+		Physics.doVelocity(aPos, aVel, sign(aPosVec.x - bPosVec.x), sign(aPosVec.y - bPosVec.y), delta/8f);
+		Physics.doVelocity(bPos, bVel, sign(bPosVec.x - aPosVec.x), sign(bPosVec.y - aPosVec.y), delta/8f);
+	}
+	
+	private static float sign(float a) {
+		if(a > 0) {
+			return 1;
+		} else if(a < 0) {
+			return -1;
+		} else {
+			return 0;
 		}
 	}
 }

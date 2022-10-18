@@ -47,7 +47,7 @@ public class MinecartGame extends StateBasedGame {
 		try {
 			AppGameContainer app = new AppGameContainer(new MinecartGame("Minecart - Riley Jones"));
 			app.setDisplayMode(888*scale, 672*scale, false);
-			//app.setVSync(true);
+			app.setVSync(true);
 			app.start();
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
