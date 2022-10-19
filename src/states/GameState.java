@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.Enemy;
 import ai.Player;
 import components.*;
 import ecs.*;
@@ -21,25 +22,23 @@ public class GameState extends BasicGameState {
 	ECS_System[] systems;
 	RenderSystem[] renderers;
 	
+	Entity spawnGroup;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		world = new Entity(new Component[] {});
+		Entity player = new Entity(new Component[] {
+				new Position(12+18*24,12+16*24),
+				new Box(-10,-10,20,20),
+				new ColorC(Color.blue),
+				new Player(((MinecartGame)game).controller),
+				new Velocity(0,0)
+			}); 
 		
-		world.addChild(new Entity(new Component[] {
-			new Position(100,100),
-			new Box(-10,-10,20,20),
-			new ColorC(Color.blue),
-			new Player(((MinecartGame)game).controller),
-			new Velocity(0,0)
-		}).addChild(new Entity(new Component[] {
-			new Position(200,100),
-			new Box(-10,-10,40,20),
-			new ColorC(Color.red)	
-		})));
+		world.addChild(player);
 		
 		world.addChild(new Entity(new Component[] {
 			new Position(0,0),
-			new Velocity(-0.01f,0.0f),
 			new TileMap(24, 24, 37, new int[] {
 					1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1 ,1 ,1 ,1,1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1,
 					1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1 ,1 ,1 ,1,1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1,
@@ -71,19 +70,37 @@ public class GameState extends BasicGameState {
 					2,9,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,5,5 ,5 ,5 ,5,5,5,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,8,2,
 			})
 		}));
+		Entity enemyPrototype = new Entity(new Component[] {
+			new Position(0,0),
+			new Box(-10,-10,20,20),
+			new ColorC(Color.red),
+			new Enemy(player, 0.03f),
+			new Velocity(0,0)
+		});
+		spawnGroup = new Entity(new Component[] {
+			new Position(0,0)
+		});
 		world.addChild(new Entity(new Component[] {
-				new Position(150,100),
-				new Box(-10,-10,20,20),
-				new ColorC(Color.red),
-				new Velocity(0,0)
-		}));
-		
-		
+			
+		}).addChild(new Entity(new Component[] {
+			new Position(12+12*24, 12+20*24),
+			new Spawner(enemyPrototype, spawnGroup)
+		})).addChild(new Entity(new Component[] {
+			new Position(12+24*24, 12+12*24),
+			new Spawner(enemyPrototype, spawnGroup)
+		})).addChild(new Entity(new Component[] {
+			new Position(12+24*24, 12+20*24),
+			new Spawner(enemyPrototype, spawnGroup)
+		})).addChild(new Entity(new Component[] {
+			new Position(12+12*24, 12+12*24),
+			new Spawner(enemyPrototype, spawnGroup)
+		})).addChild(spawnGroup));
 		systems = new ECS_System[] {
 			new AISystem(),
 			new VelocitySystem(),
+			new CollideClipSystem(),
 			new TileMapCollision(),
-			new CollideClipSystem()
+			new SpawnEnemiesSystem(spawnGroup)
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(),
@@ -104,6 +121,7 @@ public class GameState extends BasicGameState {
 		for(ECS_System s: systems) {
 			s.updateWorld(world, container, game, delta);
 		}
+		//System.out.println(((Position)(spawnGroup.getChildren()[0].getTraitByID(TRAIT.POSITION).unwrap().getValue())).getPos().unwrap().x);
 	}
 
 	@Override

@@ -60,8 +60,11 @@ public class Player extends AI{
 
 	@Override
 	public Component clone() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Player(controller);
 	}
-
+	
+	@Override
+	public AI_TYPE getType() {
+		return AI_TYPE.PLAYER;
+	}
 }

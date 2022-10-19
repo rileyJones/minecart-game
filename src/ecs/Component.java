@@ -20,7 +20,7 @@ public abstract class Component {
 	}
 	
 	public Component getValueDifference(Component other) {
-		return this.clone().anticombine(other).open();
+		return this.getValue().anticombine(other.getValue()).open();
 	}
 	
 	void setOwner(Entity owner) {

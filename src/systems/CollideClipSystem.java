@@ -7,6 +7,8 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.AI_TYPE;
+import components.AI;
 import components.Box;
 import components.Position;
 import components.Velocity;
@@ -28,8 +30,7 @@ public class CollideClipSystem extends TwoBodySystem{
 		Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap();
 		Box secondaryBox = (Box) secondary.getTraitByID(TRAIT.BOX).unwrap();
 		Velocity secondaryVel = (Velocity) secondary.getTraitByID(TRAIT.VELOCITY).unwrap();
-		
-		Physics.doSimpleCollision(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, secondaryVel, delta);
+		Physics.doPushCollision(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, secondaryVel, delta);
 	}
 
 	@Override
@@ -61,7 +62,9 @@ public class CollideClipSystem extends TwoBodySystem{
 		Result<Component, NoSuchElementException> posTrait = primary.getTraitByID(TRAIT.POSITION);
 		Result<Component, NoSuchElementException> boxTrait = primary.getTraitByID(TRAIT.BOX);
 		Result<Component, NoSuchElementException> velTrait = primary.getTraitByID(TRAIT.VELOCITY);
-		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok();
+		Result<Component, NoSuchElementException> enemyTrait = primary.getTraitByID(TRAIT.AI);
+		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok() && enemyTrait.is_ok() &&
+				(((AI)enemyTrait.unwrap()).getType() == AI_TYPE.ENEMY);
 	}
 
 	@Override

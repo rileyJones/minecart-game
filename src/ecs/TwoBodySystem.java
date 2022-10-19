@@ -7,34 +7,30 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public abstract class TwoBodySystem implements ECS_System {
 	public void updateWorld(Entity world, GameContainer container, StateBasedGame game, int delta) {
-		ArrayList<Entity> validEntities = new ArrayList<Entity>();
-		getValidEntities(world, validEntities);
-		for(Entity a: validEntities) {
-			if(testPrimary(a)) {
-				for(Entity b: validEntities.subList(validEntities.indexOf(a)+1,validEntities.size())) {
-					if(testSecondary(b)) {
-						if(test(a,b)) {
-							update(a, b, container, game, delta);
-						}
-					}
-				}
-			} else {
-				for(Entity b: validEntities.subList(validEntities.indexOf(a)+1,validEntities.size())) {
-					if(testPrimary(b)) {
-						if(test(b, a)) {
-							update(b, a, container, game, delta);
-						}
-					}
+		ArrayList<Entity> primaryEntities = new ArrayList<Entity>();
+		ArrayList<Entity> secondaryEntities = new ArrayList<Entity>();
+		getValidEntities(world, primaryEntities, secondaryEntities);
+		ArrayList<Tuple<Entity,Entity>> windows = new ArrayList<Tuple<Entity,Entity>>();
+		for(Entity a: primaryEntities) {
+			for(Entity b: secondaryEntities) {
+				if(test(a,b) && a != b) {
+					windows.add(new Tuple<Entity,Entity>(a,b));
 				}
 			}
 		}
+		for(Tuple<Entity, Entity> t: windows) {
+			update(t._1, t._2, container, game, delta);
+		}
 	}
-	private void getValidEntities(Entity world, ArrayList<Entity> validEntities) {
-		if(testPrimary(world) || testSecondary(world)) {
-			validEntities.add(world);
+	private void getValidEntities(Entity world, ArrayList<Entity> primaryEntities, ArrayList<Entity> secondaryEntities) {
+		if(testPrimary(world)) {
+			primaryEntities.add(world);
+		}
+		if(testSecondary(world)) {
+			secondaryEntities.add(world);
 		}
 		for(Entity e: world.getChildren()) {
-			getValidEntities(e, validEntities);
+			getValidEntities(e, primaryEntities, secondaryEntities);
 		}
 	}
 	protected abstract void update(Entity primary, Entity secondary, GameContainer container, StateBasedGame game, int delta);
