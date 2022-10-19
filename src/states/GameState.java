@@ -11,8 +11,10 @@ import ai.Enemy;
 import ai.Player;
 import components.*;
 import ecs.*;
+import etc.ptr;
 import game.MinecartGame;
 import renderers.DebugDraw;
+import renderers.DebugHP;
 import renderers.TileDebugDraw;
 import systems.*;
 
@@ -24,6 +26,8 @@ public class GameState extends BasicGameState {
 	
 	Entity spawnGroup;
 	
+	ptr<Integer> HP;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		world = new Entity(new Component[] {});
@@ -34,7 +38,7 @@ public class GameState extends BasicGameState {
 				new Player(((MinecartGame)game).controller),
 				new Velocity(0,0)
 			}); 
-		
+		HP = new ptr<Integer>(6);
 		world.addChild(player);
 		
 		world.addChild(new Entity(new Component[] {
@@ -100,11 +104,13 @@ public class GameState extends BasicGameState {
 			new VelocitySystem(),
 			new CollideClipSystem(),
 			new TileMapCollision(),
+			//new playerEnemyCollision(HP),
 			new SpawnEnemiesSystem(spawnGroup)
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(),
-				new DebugDraw()
+				new DebugDraw(),
+				new DebugHP(HP)
 		};
 	}
 
@@ -121,6 +127,7 @@ public class GameState extends BasicGameState {
 		for(ECS_System s: systems) {
 			s.updateWorld(world, container, game, delta);
 		}
+		HP.V = HP.V - 1;
 		//System.out.println(((Position)(spawnGroup.getChildren()[0].getTraitByID(TRAIT.POSITION).unwrap().getValue())).getPos().unwrap().x);
 	}
 
