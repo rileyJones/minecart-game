@@ -12,12 +12,14 @@ import components.AI;
 import components.Box;
 import components.Position;
 import components.Timer;
+import components.Velocity;
 import ecs.Component;
 import ecs.Entity;
 import ecs.Result;
 import ecs.TRAIT;
 import ecs.TwoBodySystem;
 import etc.ptr;
+import physics.Physics;
 
 public class PlayerEnemyCollision extends TwoBodySystem {
 
@@ -33,6 +35,14 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 		if(primaryPTimer.isDone()) {
 			HP.V --;
 			primaryPTimer.setTimer(1000);
+		}
+		Result<Component, NoSuchElementException> primaryPVel = primary.getParent().getTraitByID(TRAIT.VELOCITY);
+		if(primaryPVel.is_ok()) {
+			Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
+			
+			Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
+			
+			Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.1f);
 		}
 		
 	}
@@ -57,8 +67,9 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 		secondaryRect.setX(secondaryRect.getX()+secondaryPosVec.x);
 		secondaryRect.setY(secondaryRect.getY()+secondaryPosVec.y);
 		
+		Timer primaryPTimer = (Timer) primary.getParent().getTraitByID(TRAIT.TIMER).unwrap();
 		
-		return primaryRect.intersects(secondaryRect) && primary != secondary;
+		return primaryRect.intersects(secondaryRect) && primary != secondary && primaryPTimer.isDone();
 	}
 
 	@Override

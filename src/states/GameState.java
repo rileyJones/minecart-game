@@ -40,7 +40,9 @@ public class GameState extends BasicGameState {
 			}); 
 		HP = new ptr<Integer>(6);
 		world.addChild(new Entity(new Component[] {
-				new Timer(-1)
+				new Timer(-1),
+				new Velocity(0,0),
+				new Position(0,0)
 		}).addChild(player));
 		
 		world.addChild(new Entity(new Component[] {
@@ -106,8 +108,8 @@ public class GameState extends BasicGameState {
 			new AISystem(),
 			new VelocitySystem(),
 			new CollideClipSystem(),
-			new TileMapCollision(),
 			new PlayerEnemyCollision(HP),
+			new TileMapCollision(),
 			new SpawnEnemiesSystem(spawnGroup)
 		};
 		renderers = new RenderSystem[] {

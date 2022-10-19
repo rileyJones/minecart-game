@@ -30,7 +30,7 @@ public class CollideClipSystem extends TwoBodySystem{
 		Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap();
 		Box secondaryBox = (Box) secondary.getTraitByID(TRAIT.BOX).unwrap();
 		Velocity secondaryVel = (Velocity) secondary.getTraitByID(TRAIT.VELOCITY).unwrap();
-		Physics.doPushCollision(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, secondaryVel, delta);
+		Physics.doPushCollision(primaryPos, primaryBox, (Velocity)primaryVel.getValue(), secondaryPos, secondaryBox, (Velocity) secondaryVel.getValue(), delta);
 	}
 
 	@Override
