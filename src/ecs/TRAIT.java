@@ -7,5 +7,6 @@ public enum TRAIT {
 	VELOCITY,
 	AI,
 	TILEMAP, 
-	SPAWNER
+	SPAWNER, 
+	TIMER
 }

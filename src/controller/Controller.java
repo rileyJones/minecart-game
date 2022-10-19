@@ -26,7 +26,11 @@ public class Controller {
 	}
 	
 	public boolean buttonRepressed(int button, int delay) {
-		return buttonPressed(button) && lastPressed[button] < delay && lastPressed[button] > 0;
+		return buttonPressed(button) && lastPressed(button,delay);
+	}
+	
+	public boolean lastPressed(int button, int delay) {
+		return lastPressed[button] < delay && lastPressed[button] > 0;
 	}
 	// EVENTS
 		public Controller(int numButtons) {
