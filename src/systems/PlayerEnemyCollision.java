@@ -42,7 +42,7 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 			
 			Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
 			
-			Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.1f);
+			Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.25f);
 		}
 		
 	}

@@ -110,6 +110,7 @@ public class GameState extends BasicGameState {
 			new CollideClipSystem(),
 			new PlayerEnemyCollision(HP),
 			new TileMapCollision(),
+			new FrictionSystem(),
 			new SpawnEnemiesSystem(spawnGroup)
 		};
 		renderers = new RenderSystem[] {
