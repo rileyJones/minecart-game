@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import color.ColorSelector;
 import controller.Controller;
+import states.GameOverState;
 import states.GameState;
 
 public class MinecartGame extends StateBasedGame {
@@ -29,6 +30,7 @@ public class MinecartGame extends StateBasedGame {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new GameState());
+		addState(new GameOverState());
 	}
 	
 	@Override

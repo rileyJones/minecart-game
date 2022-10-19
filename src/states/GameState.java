@@ -29,6 +29,12 @@ public class GameState extends BasicGameState {
 	ptr<Integer> HP;
 	
 	@Override
+	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+		super.enter(container, game);
+		HP.V = 6;
+	}
+	
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		world = new Entity(new Component[] {});
 		Entity player = new Entity(new Component[] {
@@ -111,7 +117,7 @@ public class GameState extends BasicGameState {
 			new PlayerEnemyCollision(HP),
 			new TileMapCollision(),
 			new FrictionSystem(),
-			new SpawnEnemiesSystem(spawnGroup)
+			new SpawnEnemiesSystem(spawnGroup),
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(),
@@ -133,7 +139,9 @@ public class GameState extends BasicGameState {
 		for(ECS_System s: systems) {
 			s.updateWorld(world, container, game, delta);
 		}
-		//System.out.println(((Position)(spawnGroup.getChildren()[0].getTraitByID(TRAIT.POSITION).unwrap().getValue())).getPos().unwrap().x);
+		if(HP.V <= 0) {
+			game.enterState(1);
+		}
 	}
 
 	@Override
