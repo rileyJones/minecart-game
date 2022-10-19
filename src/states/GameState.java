@@ -39,7 +39,9 @@ public class GameState extends BasicGameState {
 				new Velocity(0,0)
 			}); 
 		HP = new ptr<Integer>(6);
-		world.addChild(player);
+		world.addChild(new Entity(new Component[] {
+				new Timer(-1)
+		}).addChild(player));
 		
 		world.addChild(new Entity(new Component[] {
 			new Position(0,0),
@@ -100,11 +102,12 @@ public class GameState extends BasicGameState {
 			new Spawner(enemyPrototype, spawnGroup)
 		})).addChild(spawnGroup));
 		systems = new ECS_System[] {
+			new UpdateTimers(),
 			new AISystem(),
 			new VelocitySystem(),
 			new CollideClipSystem(),
 			new TileMapCollision(),
-			//new playerEnemyCollision(HP),
+			new PlayerEnemyCollision(HP),
 			new SpawnEnemiesSystem(spawnGroup)
 		};
 		renderers = new RenderSystem[] {
@@ -127,7 +130,6 @@ public class GameState extends BasicGameState {
 		for(ECS_System s: systems) {
 			s.updateWorld(world, container, game, delta);
 		}
-		HP.V = HP.V - 1;
 		//System.out.println(((Position)(spawnGroup.getChildren()[0].getTraitByID(TRAIT.POSITION).unwrap().getValue())).getPos().unwrap().x);
 	}
 

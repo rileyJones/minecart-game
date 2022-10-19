@@ -36,8 +36,8 @@ public class Physics {
 		
 		float tempDelta = Physics.getBoxCollideDelta(aRect, new Vector2f(0,0), bRect, velDifVec);
 		
-		Physics.doVelocity(aPos, aVel, 0, 0, tempDelta);
-		Physics.doVelocity(bPos, bVel, 0, 0, tempDelta);
+		Physics.doVelocity(aPos, (Velocity)aVel.getValue(), 0, 0, tempDelta);
+		Physics.doVelocity(bPos, (Velocity)bVel.getValue(), 0, 0, tempDelta);
 		return -tempDelta;
 	}
 	
@@ -142,8 +142,8 @@ public class Physics {
 		if(!aRect.intersects(bRect)) return;
 		if(velDifVec.lengthSquared() == 0) return;
 		
-		Physics.doVelocity(aPos, aVel, sign(aPosVec.x - bPosVec.x), sign(aPosVec.y - bPosVec.y), delta/8f);
-		Physics.doVelocity(bPos, bVel, sign(bPosVec.x - aPosVec.x), sign(bPosVec.y - aPosVec.y), delta/8f);
+		Physics.doVelocity(aPos, (Velocity)aVel.getValue(), sign(aPosVec.x - bPosVec.x), sign(aPosVec.y - bPosVec.y), delta/8f);
+		Physics.doVelocity(bPos, (Velocity)bVel.getValue(), sign(bPosVec.x - aPosVec.x), sign(bPosVec.y - aPosVec.y), delta/8f);
 	}
 	
 	private static float sign(float a) {
