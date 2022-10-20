@@ -112,10 +112,11 @@ public class GameState extends BasicGameState {
 		systems = new ECS_System[] {
 			new UpdateTimers(),
 			new AISystem(),
-			new VelocitySystem(),
 			new CollideClipSystem(),
+			new VelocitySystem(),
+			new TileMapCollision(HP),
 			new PlayerEnemyCollision(HP),
-			new TileMapCollision(),
+			new TileMapCollision(HP),
 			new FrictionSystem(),
 			new SpawnEnemiesSystem(spawnGroup),
 		};

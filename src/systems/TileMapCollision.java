@@ -3,23 +3,33 @@ package systems;
 import java.util.NoSuchElementException;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import components.AI;
 import components.Box;
 import components.Position;
 import components.TileMap;
+import components.Timer;
 import components.Velocity;
 import ecs.Component;
 import ecs.Entity;
 import ecs.Result;
 import ecs.TRAIT;
 import ecs.TwoBodySystem;
+import etc.ptr;
 import physics.Physics;
 
 public class TileMapCollision extends TwoBodySystem {
 
+	ptr<Integer> HP;
+	
+	public TileMapCollision(ptr<Integer> HP) {
+		this.HP = HP;
+	}
+	
 	@Override
 	protected void update(Entity primary, Entity secondary, GameContainer container, StateBasedGame game, int delta) {
 		Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap();
@@ -87,6 +97,40 @@ public class TileMapCollision extends TwoBodySystem {
 					case GROUND:
 						break;
 					case HOLE:
+						Rectangle secRectHole = new Rectangle(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
+						AI pAI = (AI)primary.getTraitByID(TRAIT.AI).unwrap();
+						switch(pAI.getType()) {
+							case ENEMY:
+								if(secRectHole.contains(new Point(primaryPosVec.x, primaryPosVec.y))) {
+									if(primary.getParent() != null) {
+										primary.setParent(null);
+									}
+								}
+								break;
+							case PLAYER:
+								if(secRectHole.contains(new Point(primaryPosVec.x, primaryPosVec.y))) {
+									primaryPos.set(new Position(12+18*24,12+16*24));
+									if(primary.getParent() != null) {
+										Result<Component, NoSuchElementException> pPosPR = primary.getParent().getTraitByID(TRAIT.POSITION);
+										if(pPosPR.is_ok()) {
+											pPosPR.unwrap().set(new Position(0,0));
+										}
+										Result<Component, NoSuchElementException> pTimerPResult = primary.getParent().getTraitByID(TRAIT.TIMER);
+										if(pTimerPResult.is_ok()) {
+											Timer pTimerP = (Timer) pTimerPResult.unwrap();
+											if(pTimerP.isDone()) {
+												HP.V--;
+												pTimerP.setTimer(2000);
+											}
+										}
+									}
+									return;
+								}
+								break;
+							default:
+								break;
+							
+						}
 						break;
 					case SPAWN_ENEMY:
 						break;
@@ -149,7 +193,8 @@ public class TileMapCollision extends TwoBodySystem {
 		Result<Component, NoSuchElementException> posTrait = primary.getTraitByID(TRAIT.POSITION);
 		Result<Component, NoSuchElementException> boxTrait = primary.getTraitByID(TRAIT.BOX);
 		Result<Component, NoSuchElementException> velTrait = primary.getTraitByID(TRAIT.VELOCITY);
-		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok();
+		Result<Component, NoSuchElementException> aiTrait = primary.getTraitByID(TRAIT.AI);
+		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok() && aiTrait.is_ok();
 	}
 
 	@Override
