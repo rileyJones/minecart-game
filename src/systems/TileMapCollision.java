@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import components.AI;
 import components.Box;
 import components.Position;
 import components.TileMap;
@@ -98,18 +99,38 @@ public class TileMapCollision extends TwoBodySystem {
 					case HOLE:
 						Rectangle secRectHole = new Rectangle(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
 						Box secondaryBoxHole = new Box(secRectHole.getX()-secRectHole.getWidth()/4f, secRectHole.getY()-secRectHole.getHeight()/4f, secRectHole.getWidth()*1.5f, secRectHole.getHeight()*1.5f);
-						if(secRectHole.contains(new Point(primaryPosVec.x, primaryPosVec.y))) {
-							Physics.doBoxClip(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBoxHole, new Velocity(0,0), delta);
-							if(primary.getParent() != null) {
-								Result<Component, NoSuchElementException> pTimerPResult = primary.getParent().getTraitByID(TRAIT.TIMER);
-								if(pTimerPResult.is_ok()) {
-									Timer pTimerP = (Timer) pTimerPResult.unwrap();
-									if(pTimerP.isDone()) {
-										HP.V--;
+						AI pAI = (AI)primary.getTraitByID(TRAIT.AI).unwrap();
+						switch(pAI.getType()) {
+							case ENEMY:
+								if(secRectHole.contains(new Point(primaryPosVec.x, primaryPosVec.y))) {
+									if(primary.getParent() != null) {
+										primary.setParent(null);
 									}
-									pTimerP.setTimer(2000);
 								}
-							}
+								break;
+							case PLAYER:
+								if(secRectHole.contains(new Point(primaryPosVec.x, primaryPosVec.y))) {
+									primaryPos.set(new Position(12+18*24,12+16*24));
+									if(primary.getParent() != null) {
+										Result<Component, NoSuchElementException> pPosPR = primary.getParent().getTraitByID(TRAIT.POSITION);
+										if(pPosPR.is_ok()) {
+											pPosPR.unwrap().set(new Position(0,0));
+										}
+										Result<Component, NoSuchElementException> pTimerPResult = primary.getParent().getTraitByID(TRAIT.TIMER);
+										if(pTimerPResult.is_ok()) {
+											Timer pTimerP = (Timer) pTimerPResult.unwrap();
+											if(pTimerP.isDone()) {
+												HP.V--;
+												pTimerP.setTimer(2000);
+											}
+										}
+									}
+									return;
+								}
+								break;
+							default:
+								break;
+							
 						}
 						break;
 					case SPAWN_ENEMY:
