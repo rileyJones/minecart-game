@@ -35,6 +35,10 @@ public class GameState extends BasicGameState {
 		super.enter(container, game);
 		HP.V = 6;
 		kart.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(17*24+12,5*24+12));
+		kart.getTraitByID(TRAIT.VELOCITY).unwrap().set(new Velocity(0.1f,0.0f));
+		for(Entity child: spawnGroup.getChildren()) {
+			child.setParent(null);
+		}
 	}
 	
 	@Override
@@ -121,7 +125,11 @@ public class GameState extends BasicGameState {
 				new Velocity(0.1f,0),
 				new NoFriction(),
 				new Kart()
-			});
+			}).addChild(new Entity(new Component[] {
+				new Position(0,0),
+				new Box(-10,-10,20,13),
+				new ColorC(Color.lightGray)
+			}));
 		
 		world.addChild(kart);
 		
