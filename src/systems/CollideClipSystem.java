@@ -24,13 +24,13 @@ public class CollideClipSystem extends TwoBodySystem{
 	@Override
 	protected void update(Entity primary, Entity secondary, GameContainer container, StateBasedGame game, int delta) {
 		Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap();
-		Box primaryBox = (Box) primary.getTraitByID(TRAIT.BOX).unwrap();
 		Velocity primaryVel = (Velocity) primary.getTraitByID(TRAIT.VELOCITY).unwrap();
 		
 		Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap();
-		Box secondaryBox = (Box) secondary.getTraitByID(TRAIT.BOX).unwrap();
 		Velocity secondaryVel = (Velocity) secondary.getTraitByID(TRAIT.VELOCITY).unwrap();
-		Physics.doPushCollision(primaryPos, primaryBox, (Velocity)primaryVel.getValue(), secondaryPos, secondaryBox, (Velocity) secondaryVel.getValue(), delta);
+		
+		Physics.doOffsetLaunch(primaryPos, primaryVel, secondaryPos, 0.1f);
+		Physics.doOffsetLaunch(secondaryPos, secondaryVel, primaryPos, 0.1f);
 	}
 
 	@Override
