@@ -25,7 +25,8 @@ public class FrictionSystem extends OneBodySystem{
 	@Override
 	protected boolean test(Entity e) {
 		Result<Component, NoSuchElementException> velTrait = e.getTraitByID(TRAIT.VELOCITY);
-		return velTrait.is_ok();
+		Result<Component, NoSuchElementException> noFrictionTrait = e.getTraitByID(TRAIT.NO_FRICTION);
+		return velTrait.is_ok() && noFrictionTrait.is_err();
 	}
 
 }

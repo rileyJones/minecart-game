@@ -8,6 +8,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import ai.Enemy;
+import ai.Kart;
 import ai.Player;
 import components.*;
 import ecs.*;
@@ -25,6 +26,7 @@ public class GameState extends BasicGameState {
 	RenderSystem[] renderers;
 	
 	Entity spawnGroup;
+	Entity kart;
 	
 	ptr<Integer> HP;
 	
@@ -32,6 +34,7 @@ public class GameState extends BasicGameState {
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		super.enter(container, game);
 		HP.V = 6;
+		kart.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(17*24+12,5*24+12));
 	}
 	
 	@Override
@@ -109,6 +112,19 @@ public class GameState extends BasicGameState {
 			new Position(12+12*24, 12+12*24),
 			new Spawner(enemyPrototype, spawnGroup)
 		})).addChild(spawnGroup));
+		
+		
+		kart = new Entity(new Component[] {
+				new Position(17*24+12,5*24+12),
+				new Box(0,0,0,0),
+				new ColorC(Color.lightGray),
+				new Velocity(0.1f,0),
+				new NoFriction(),
+				new Kart()
+			});
+		
+		world.addChild(kart);
+		
 		systems = new ECS_System[] {
 			new UpdateTimers(),
 			new AISystem(),

@@ -8,5 +8,5 @@ public enum TRAIT {
 	AI,
 	TILEMAP, 
 	SPAWNER, 
-	TIMER
+	TIMER, NO_FRICTION
 }

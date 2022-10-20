@@ -25,6 +25,7 @@ import physics.Physics;
 public class TileMapCollision extends TwoBodySystem {
 
 	ptr<Integer> HP;
+	boolean buttonPressed;
 	
 	public TileMapCollision(ptr<Integer> HP) {
 		this.HP = HP;
@@ -91,6 +92,7 @@ public class TileMapCollision extends TwoBodySystem {
 						Physics.doSimpleCollision(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, new Velocity(0,0), delta);
 						break;
 					case BUTTON:
+						buttonPressed = true;
 						break;
 					case EMPTY:
 						break;
@@ -137,18 +139,46 @@ public class TileMapCollision extends TwoBodySystem {
 					case SPAWN_PLAYER:
 						break;
 					case TRACK_DL:
+						if(primaryVelVec.x > 0 && primaryPosVec.x%24>12) {
+							primaryVel.set(new Velocity(0.0f,0.1f));
+						} else if(primaryVelVec.y < 0 && primaryPosVec.y%24<12){
+							primaryVel.set(new Velocity(-0.1f,0.0f));
+						}
 						break;
 					case TRACK_DR:
+						if(primaryVelVec.y < 0 && primaryPosVec.y%24<12) {
+							primaryVel.set(new Velocity(0.1f,0.0f));
+						} else if(primaryVelVec.x < 0 && primaryPosVec.x%24<12){
+							primaryVel.set(new Velocity(0.0f,0.1f));
+						}
+						
 						break;
 					case TRACK_HOR:
 						break;
 					case TRACK_STOP:
+						game.enterState(1);
 						break;
 					case TRACK_SWAP:
+						if(buttonPressed && primaryPosVec.x%24>12 && primaryPosVec.y%24<20) {
+							primaryVel.set(new Velocity(0.1f,0.0f));
+						} else if(primaryPosVec.x%24>12 && primaryPosVec.x%24<13){
+							primaryVel.set(new Velocity(0.0f,0.1f));
+						}
 						break;
 					case TRACK_UL:
+						if(primaryVelVec.y > 0 && primaryPosVec.y%24>12) {
+							primaryVel.set(new Velocity(-0.1f,0.0f));
+						} else if(primaryVelVec.x > 0 && primaryPosVec.x%24>12){
+							primaryVel.set(new Velocity(0.0f,-0.1f));
+						}
+						
 						break;
 					case TRACK_UR:
+						if(primaryVelVec.x < 0 && primaryPosVec.x%24<12) {
+							primaryVel.set(new Velocity(0.0f,-0.1f));
+						} else if(primaryVelVec.y > 0 && primaryPosVec.y%24>12){
+							primaryVel.set(new Velocity(0.1f,0.0f));
+						}
 						break;
 					case TRACK_VERT:
 						break;
@@ -199,6 +229,7 @@ public class TileMapCollision extends TwoBodySystem {
 
 	@Override
 	protected boolean testSecondary(Entity secondary) {
+		buttonPressed = false;
 		Result<Component, NoSuchElementException> tileMapTrait = secondary.getTraitByID(TRAIT.TILEMAP);
 		Result<Component, NoSuchElementException> posTrait = secondary.getTraitByID(TRAIT.POSITION);
 		return tileMapTrait.is_ok() && posTrait.is_ok();
