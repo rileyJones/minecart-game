@@ -115,7 +115,7 @@ public class GameState extends BasicGameState {
 			new VelocitySystem(),
 			new CollideClipSystem(),
 			new PlayerEnemyCollision(HP),
-			new TileMapCollision(),
+			new TileMapCollision(HP),
 			new FrictionSystem(),
 			new SpawnEnemiesSystem(spawnGroup),
 		};
