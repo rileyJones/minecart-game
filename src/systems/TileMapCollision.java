@@ -98,7 +98,6 @@ public class TileMapCollision extends TwoBodySystem {
 						break;
 					case HOLE:
 						Rectangle secRectHole = new Rectangle(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
-						Box secondaryBoxHole = new Box(secRectHole.getX()-secRectHole.getWidth()/4f, secRectHole.getY()-secRectHole.getHeight()/4f, secRectHole.getWidth()*1.5f, secRectHole.getHeight()*1.5f);
 						AI pAI = (AI)primary.getTraitByID(TRAIT.AI).unwrap();
 						switch(pAI.getType()) {
 							case ENEMY:
