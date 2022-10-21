@@ -70,6 +70,7 @@ public class Player extends AI{
 		button_a = ITEM.SWORD;
 		button_b = ITEM.FEATHER;
 		currentState = STATE.WALKING;
+		facingDirection = DIRECTION.DOWN;
 	}
 	
 	public STATE getState() {
