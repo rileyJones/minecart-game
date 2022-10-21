@@ -53,7 +53,7 @@ public class GameState extends BasicGameState {
 			}); 
 		HP = new ptr<Integer>(6);
 		world.addChild(new Entity(new Component[] {
-				new Timer(-1),
+				new Timer(1000,true),
 				new Velocity(0,0),
 				new Position(0,0)
 		}).addChild(player));
@@ -91,13 +91,19 @@ public class GameState extends BasicGameState {
 					2,9,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,5,5 ,5 ,5 ,5,5,5,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,8,2,
 			})
 		}));
-		Entity enemyPrototype = new Entity(new Component[] {
+		
+		Entity enemyPrototype = new Entity( new Component[] {
+			new Position(0,0),
+			new Velocity(0,0),
+			new Timer(200, true),
+		}).addChild(new Entity(new Component[] {
 			new Position(0,0),
 			new Box(-10,-10,20,20),
 			new ColorC(Color.red),
 			new Enemy(player, 0.03f),
 			new Velocity(0,0)
-		});
+		}));
+		//*/
 		spawnGroup = new Entity(new Component[] {
 			new Position(0,0)
 		});
@@ -137,6 +143,7 @@ public class GameState extends BasicGameState {
 			new UpdateTimers(),
 			new AISystem(),
 			new CollideClipSystem(),
+			new SwordEnemyCollision(),
 			new VelocitySystem(),
 			new TileMapCollision(HP),
 			new PlayerEnemyCollision(HP),

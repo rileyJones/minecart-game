@@ -18,31 +18,23 @@ import ecs.Entity;
 import ecs.Result;
 import ecs.TRAIT;
 import ecs.TwoBodySystem;
-import etc.ptr;
 import physics.Physics;
 
-public class PlayerEnemyCollision extends TwoBodySystem {
+public class SwordEnemyCollision extends TwoBodySystem {
 
-	ptr<Integer> HP;
 	
-	public PlayerEnemyCollision(ptr<Integer> HP) {
-		this.HP = HP;
-	}
 
 	@Override
 	protected void update(Entity primary, Entity secondary, GameContainer container, StateBasedGame game, int delta) {
-		Timer primaryPTimer = (Timer) primary.getParent().getTraitByID(TRAIT.TIMER).unwrap();
-		if(primaryPTimer.isDone()) {
-			HP.V --;
-			primaryPTimer.reset();
-		}
-		Result<Component, NoSuchElementException> primaryPVel = primary.getParent().getTraitByID(TRAIT.VELOCITY);
-		if(primaryPVel.is_ok()) {
-			Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
-			
-			Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
-			
-			Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.25f);
+		
+		Position secondaryPos = (Position)secondary.getTraitByID(TRAIT.POSITION).unwrap();
+		Velocity secondaryVel = (Velocity) secondary.getParent().getTraitByID(TRAIT.VELOCITY).unwrap();
+		Timer secondaryTimer = (Timer) secondary.getParent().getTraitByID(TRAIT.TIMER).unwrap();
+		
+		Position primaryPPos = (Position)primary.getParent().getTraitByID(TRAIT.POSITION).unwrap();
+		if(secondaryTimer.isDone()) {
+			Physics.doOffsetLaunch(secondaryPos, secondaryVel, primaryPPos, 0.5f);
+			secondaryTimer.reset();
 		}
 		
 	}
@@ -67,35 +59,42 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 		secondaryRect.setX(secondaryRect.getX()+secondaryPosVec.x);
 		secondaryRect.setY(secondaryRect.getY()+secondaryPosVec.y);
 		
-		Timer primaryPTimer = (Timer) primary.getParent().getTraitByID(TRAIT.TIMER).unwrap();
-		
-		return primaryRect.intersects(secondaryRect) && primary != secondary && primaryPTimer.isDone();
+		return primaryRect.intersects(secondaryRect) && primary != secondary;
 	}
 
 	@Override
 	protected boolean testPrimary(Entity primary) {
 		Result<Component, NoSuchElementException> posTrait = primary.getTraitByID(TRAIT.POSITION);
 		Result<Component, NoSuchElementException> boxTrait = primary.getTraitByID(TRAIT.BOX);
-		Result<Component, NoSuchElementException> velTrait = primary.getTraitByID(TRAIT.VELOCITY);
 		Result<Component, NoSuchElementException> playerTrait = primary.getTraitByID(TRAIT.AI);
 		
-		Result<Component, NoSuchElementException> pTimerTrait = new Result<Component, NoSuchElementException>(new NoSuchElementException());
+		Result<Component, NoSuchElementException> pPosTrait = new Result<Component, NoSuchElementException>(new NoSuchElementException());
 		if(primary.getParent() != null) {
-			 pTimerTrait = primary.getParent().getTraitByID(TRAIT.TIMER);
+			pPosTrait = primary.getParent().getTraitByID(TRAIT.POSITION);
 		}
 		
-		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok() && playerTrait.is_ok() &&
-				(((AI)playerTrait.unwrap()).getType() == AI_TYPE.PLAYER) && pTimerTrait.is_ok();
+		return posTrait.is_ok() && boxTrait.is_ok() && playerTrait.is_ok() &&
+				(((AI)playerTrait.unwrap()).getType() == AI_TYPE.SWORD) && pPosTrait.is_ok();
 	}
 
 	@Override
 	protected boolean testSecondary(Entity secondary) {
 		Result<Component, NoSuchElementException> posTrait = secondary.getTraitByID(TRAIT.POSITION);
 		Result<Component, NoSuchElementException> boxTrait = secondary.getTraitByID(TRAIT.BOX);
-		Result<Component, NoSuchElementException> velTrait = secondary.getTraitByID(TRAIT.VELOCITY);
 		Result<Component, NoSuchElementException> enemyTrait = secondary.getTraitByID(TRAIT.AI);
-		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok() && enemyTrait.is_ok() &&
-				(((AI)enemyTrait.unwrap()).getType() == AI_TYPE.ENEMY);
+		
+		Result<Component, NoSuchElementException> pvelTrait = new Result<Component, NoSuchElementException>(new NoSuchElementException());
+		Result<Component, NoSuchElementException> pposTrait = new Result<Component, NoSuchElementException>(new NoSuchElementException());
+		Result<Component, NoSuchElementException> pTimTrait = new Result<Component, NoSuchElementException>(new NoSuchElementException());
+		if(secondary.getParent() != null) {
+			pvelTrait = secondary.getParent().getTraitByID(TRAIT.POSITION);
+			pposTrait = secondary.getParent().getTraitByID(TRAIT.VELOCITY);
+			pTimTrait = secondary.getParent().getTraitByID(TRAIT.TIMER);
+		}
+		
+		return posTrait.is_ok() && boxTrait.is_ok() && enemyTrait.is_ok() &&
+				(((AI)enemyTrait.unwrap()).getType() == AI_TYPE.ENEMY) && pvelTrait.is_ok() && 
+				pposTrait.is_ok() && pTimTrait.is_ok();
 	}
 
 }

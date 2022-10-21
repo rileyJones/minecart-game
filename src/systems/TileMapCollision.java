@@ -105,7 +105,7 @@ public class TileMapCollision extends TwoBodySystem {
 							case ENEMY:
 								if(secRectHole.contains(new Point(primaryPosVec.x, primaryPosVec.y))) {
 									if(primary.getParent() != null) {
-										primary.setParent(null);
+										primary.getParent().setParent(null);
 									}
 								}
 								break;
@@ -122,7 +122,7 @@ public class TileMapCollision extends TwoBodySystem {
 											Timer pTimerP = (Timer) pTimerPResult.unwrap();
 											if(pTimerP.isDone()) {
 												HP.V--;
-												pTimerP.setTimer(2000);
+												pTimerP.reset();
 											}
 										}
 									}
@@ -159,9 +159,9 @@ public class TileMapCollision extends TwoBodySystem {
 						game.enterState(1);
 						break;
 					case TRACK_SWAP:
-						if(buttonPressed && primaryPosVec.x%24>12 && primaryPosVec.y%24<20) {
+						if(buttonPressed && primaryPosVec.x%24>10 && primaryPosVec.y%24<14) {
 							primaryVel.set(new Velocity(0.1f,0.0f));
-						} else if(primaryPosVec.x%24>12 && primaryPosVec.x%24<13){
+						} else if(primaryPosVec.x%24>10 && primaryPosVec.x%24<14){
 							primaryVel.set(new Velocity(0.0f,0.1f));
 						}
 						break;

@@ -6,9 +6,24 @@ import ecs.TRAIT;
 public class Timer extends Component {
 
 	int time;
+	int max;
 	
-	public Timer(int length) {
-		this.time = length;
+	public Timer(int length, boolean startDone) {
+		if(startDone) {
+			this.time = -1;
+		} else {
+			this.time = length;
+		}
+		this.max = length;
+	}
+	
+	private Timer(int time, int max) {
+		this.max = max;
+		this.time = time;
+	}
+	
+	public void reset() {
+		this.time = max;
 	}
 	
 	public boolean update(int delta) {
@@ -22,6 +37,7 @@ public class Timer extends Component {
 	
 	public void setTimer(int time) {
 		this.time = time;
+		this.max = time;
 	}
 	
 	@Override
@@ -53,7 +69,7 @@ public class Timer extends Component {
 
 	@Override
 	public Component clone() {
-		return new Timer(time);
+		return new Timer(time, max);
 	}
 
 }
