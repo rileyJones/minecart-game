@@ -47,11 +47,6 @@ public class GameState extends BasicGameState {
 				new Velocity(0,0)
 			}); 
 		HP = new ptr<Integer>(6);
-		world.addChild(new Entity(new Component[] {
-				new Timer(1000,true),
-				new Velocity(0,0),
-				new Position(0,0)
-		}).addChild(player));
 		
 		world.addChild(new Entity(new Component[] {
 			new Position(0,0),
@@ -133,6 +128,12 @@ public class GameState extends BasicGameState {
 			}));
 		
 		world.addChild(kart);
+		
+		world.addChild(new Entity(new Component[] {
+				new Timer(1000,true),
+				new Velocity(0,0),
+				new Position(0,0)
+		}).addChild(player));
 		
 		systems = new ECS_System[] {
 			new UpdateTimers(),

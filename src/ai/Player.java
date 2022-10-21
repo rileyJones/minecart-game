@@ -54,7 +54,8 @@ public class Player extends AI{
 	public enum STATE {
 		WALKING,
 		SWORD,
-		SHIELD
+		SHIELD,
+		JUMP
 	}
 	
 	enum DIRECTION {
@@ -67,7 +68,7 @@ public class Player extends AI{
 	public Player(Controller controller) {
 		this.controller = controller;
 		button_a = ITEM.SWORD;
-		button_b = ITEM.SHIELD;
+		button_b = ITEM.FEATHER;
 		currentState = STATE.WALKING;
 	}
 	
@@ -94,6 +95,9 @@ public class Player extends AI{
 			case SHIELD:
 				if(!itemHeld(ITEM.SHIELD)) enterState(STATE.WALKING);
 				setVelocityController(SHIELD_VEL);
+			case JUMP:
+				setVelocityController(MOVE_VEL);
+				if(timerIsDone()) enterState(STATE.WALKING);
 			default:
 				break;
 		}
@@ -107,6 +111,8 @@ public class Player extends AI{
 			case WALKING:
 				break;
 			case SHIELD:
+				break;
+			case JUMP:
 				break;
 			default:
 				break;
@@ -137,6 +143,10 @@ public class Player extends AI{
 			case WALKING:
 				break;
 			case SHIELD:
+				break;
+			case JUMP:
+				setTimer(1000);
+				break;
 			default:
 				break;
 			
@@ -184,6 +194,7 @@ public class Player extends AI{
 		
 		switch(itemUsed) {
 			case FEATHER:
+				enterState(STATE.JUMP);
 				break;
 			case NOTHING:
 				break;

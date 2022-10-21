@@ -9,6 +9,8 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.AI_TYPE;
+import ai.Player;
 import components.AI;
 import components.Box;
 import components.Position;
@@ -93,6 +95,11 @@ public class TileMapCollision extends TwoBodySystem {
 						Physics.doSimpleCollision(primaryPos, primaryBox, new Velocity(primaryVelVec.x, primaryVelVec.y), secondaryPos, secondaryBox, new Velocity(0,0), delta);
 						break;
 					case BUTTON:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.PLAYER) {
+							if(((Player)primary.getTraitByID(TRAIT.AI).unwrap()).getState() == Player.STATE.JUMP) {
+								continue;
+							}
+						}
 						buttonPressed = true;
 						break;
 					case EMPTY:
@@ -100,6 +107,11 @@ public class TileMapCollision extends TwoBodySystem {
 					case GROUND:
 						break;
 					case HOLE:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.PLAYER) {
+							if(((Player)primary.getTraitByID(TRAIT.AI).unwrap()).getState() == Player.STATE.JUMP) {
+								continue;
+							}
+						}
 						Rectangle secRectHole = new Rectangle(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
 						AI pAI = (AI)primary.getTraitByID(TRAIT.AI).unwrap();
 						switch(pAI.getType()) {

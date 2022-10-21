@@ -34,12 +34,12 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 	protected void update(Entity primary, Entity secondary, GameContainer container, StateBasedGame game, int delta) {
 		Timer primaryPTimer = (Timer) primary.getParent().getTraitByID(TRAIT.TIMER).unwrap();
 		Player player = (Player) primary.getTraitByID(TRAIT.AI).unwrap();
-		if(primaryPTimer.isDone() && player.getState() != Player.STATE.SHIELD) {
+		if(primaryPTimer.isDone() && player.getState() != Player.STATE.SHIELD && player.getState() != Player.STATE.JUMP) {
 			HP.V --;
 			primaryPTimer.reset();
 		}
 		Result<Component, NoSuchElementException> primaryPVel = primary.getParent().getTraitByID(TRAIT.VELOCITY);
-		if(primaryPVel.is_ok()) {
+		if(primaryPVel.is_ok() && player.getState() != Player.STATE.JUMP) {
 			Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
 			
 			Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
