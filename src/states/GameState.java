@@ -16,6 +16,7 @@ import etc.ptr;
 import game.MinecartGame;
 import renderers.DebugDraw;
 import renderers.DebugHP;
+import renderers.DebugItems;
 import renderers.TileDebugDraw;
 import systems.*;
 
@@ -33,12 +34,6 @@ public class GameState extends BasicGameState {
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		super.enter(container, game);
-		HP.V = 6;
-		kart.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(17*24+12,5*24+12));
-		kart.getTraitByID(TRAIT.VELOCITY).unwrap().set(new Velocity(0.1f,0.0f));
-		for(Entity child: spawnGroup.getChildren()) {
-			child.setParent(null);
-		}
 	}
 	
 	@Override
@@ -154,7 +149,8 @@ public class GameState extends BasicGameState {
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(),
 				new DebugDraw(),
-				new DebugHP(HP)
+				new DebugHP(HP),
+				new DebugItems()
 		};
 	}
 
@@ -172,6 +168,7 @@ public class GameState extends BasicGameState {
 			s.updateWorld(world, container, game, delta);
 		}
 		if(HP.V <= 0) {
+			init(container, game);
 			game.enterState(1);
 		}
 	}

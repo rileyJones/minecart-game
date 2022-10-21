@@ -3,6 +3,7 @@ package systems;
 import java.util.NoSuchElementException;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
@@ -89,7 +90,7 @@ public class TileMapCollision extends TwoBodySystem {
 				switch(secondaryTileMap.getTile(x, y)) {
 					case BLOCK:
 						Box secondaryBox = new Box(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
-						Physics.doSimpleCollision(primaryPos, primaryBox, primaryVel, secondaryPos, secondaryBox, new Velocity(0,0), delta);
+						Physics.doSimpleCollision(primaryPos, primaryBox, new Velocity(primaryVelVec.x, primaryVelVec.y), secondaryPos, secondaryBox, new Velocity(0,0), delta);
 						break;
 					case BUTTON:
 						buttonPressed = true;
@@ -156,6 +157,11 @@ public class TileMapCollision extends TwoBodySystem {
 					case TRACK_HOR:
 						break;
 					case TRACK_STOP:
+						try {
+							game.getCurrentState().init(container,game);
+						} catch (SlickException e) {
+							e.printStackTrace();
+						}
 						game.enterState(1);
 						break;
 					case TRACK_SWAP:

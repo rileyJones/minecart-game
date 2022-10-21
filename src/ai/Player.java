@@ -81,7 +81,10 @@ public class Player extends AI{
 		resetVelocity();
 		switch(currentState) {
 			case SWORD:
-				if(itemUsed(ITEM.SWORD)) enterState(STATE.SWORD);
+				if(itemUsed(ITEM.SWORD)) {
+					setVelocityController(0);
+					enterState(STATE.SWORD);
+				}
 				if(timerIsDone()) enterState(STATE.WALKING);
 				break;
 			case WALKING:
@@ -96,7 +99,7 @@ public class Player extends AI{
 		}
 	}
 	
-	private void enterState(STATE S) {
+	public void enterState(STATE S) {
 		switch(currentState) {
 			case SWORD:
 				swordEntity.setParent(null);
@@ -247,6 +250,13 @@ public class Player extends AI{
 	@Override
 	public AI_TYPE getType() {
 		return AI_TYPE.PLAYER;
+	}
+	
+	public String bString() {
+		return button_b.toString();
+	}
+	public String aString() {
+		return button_a.toString();
 	}
 	
 }

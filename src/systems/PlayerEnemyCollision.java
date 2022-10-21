@@ -49,6 +49,7 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 				Physics.doOffsetLaunch(secondaryPos, secondaryPVel, primaryPos, 0.2f);
 				Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.1f);
 			} else {
+				player.enterState(Player.STATE.WALKING);
 				Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.25f);
 			}
 			

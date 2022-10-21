@@ -81,7 +81,7 @@ public class Physics {
 		}
 	}
 	
-	public static void doSimpleCollision(Position aPos, Box aBox, Velocity aVel, Position bPos, Box bBox, Velocity bVel, float delta) {
+	public static float doSimpleCollision(Position aPos, Box aBox, Velocity aVel, Position bPos, Box bBox, Velocity bVel, float delta) {
 		float tempDelta = doBoxClip(aPos, aBox, (Velocity)aVel.getValue(), bPos, bBox, (Velocity)bVel.getValue(), delta);
 		Vector2f aPosVec = ((Position)aPos.getValue()).getPos().unwrap();
 		Rectangle aRect = ((Box)aBox.getValue()).getBox().unwrap();
@@ -122,6 +122,7 @@ public class Physics {
 			default:
 				break;	
 		}
+		return tempDelta;
 	}
 	
 	public static void doOffsetLaunch(Position aPos, Velocity aVel, Position bPos, float strength) {
