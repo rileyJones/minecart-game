@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import ai.AI_TYPE;
+import ai.Player;
 import components.AI;
 import components.Box;
 import components.Position;
@@ -32,7 +33,8 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 	@Override
 	protected void update(Entity primary, Entity secondary, GameContainer container, StateBasedGame game, int delta) {
 		Timer primaryPTimer = (Timer) primary.getParent().getTraitByID(TRAIT.TIMER).unwrap();
-		if(primaryPTimer.isDone()) {
+		Player player = (Player) primary.getTraitByID(TRAIT.AI).unwrap();
+		if(primaryPTimer.isDone() && player.getState() != Player.STATE.SHIELD) {
 			HP.V --;
 			primaryPTimer.reset();
 		}
@@ -41,8 +43,15 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 			Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
 			
 			Position secondaryPos = (Position) secondary.getTraitByID(TRAIT.POSITION).unwrap().getValue();
+			Velocity secondaryPVel = (Velocity) secondary.getParent().getTraitByID(TRAIT.VELOCITY).unwrap();
 			
-			Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.25f);
+			if(player.getState() == Player.STATE.SHIELD) {
+				Physics.doOffsetLaunch(secondaryPos, secondaryPVel, primaryPos, 0.2f);
+				Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.1f);
+			} else {
+				Physics.doOffsetLaunch(primaryPos, (Velocity)primaryPVel.unwrap(), secondaryPos, 0.25f);
+			}
+			
 		}
 		
 	}
@@ -94,8 +103,14 @@ public class PlayerEnemyCollision extends TwoBodySystem {
 		Result<Component, NoSuchElementException> boxTrait = secondary.getTraitByID(TRAIT.BOX);
 		Result<Component, NoSuchElementException> velTrait = secondary.getTraitByID(TRAIT.VELOCITY);
 		Result<Component, NoSuchElementException> enemyTrait = secondary.getTraitByID(TRAIT.AI);
+		
+		Result<Component, NoSuchElementException> pVelTrait = new Result<Component, NoSuchElementException>(new NoSuchElementException());
+		if(secondary.getParent() != null) {
+			 pVelTrait = secondary.getParent().getTraitByID(TRAIT.VELOCITY);
+		}
+		
 		return posTrait.is_ok() && boxTrait.is_ok() && velTrait.is_ok() && enemyTrait.is_ok() &&
-				(((AI)enemyTrait.unwrap()).getType() == AI_TYPE.ENEMY);
+				(((AI)enemyTrait.unwrap()).getType() == AI_TYPE.ENEMY) && pVelTrait.is_ok();
 	}
 
 }

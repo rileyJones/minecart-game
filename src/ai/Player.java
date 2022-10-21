@@ -26,10 +26,11 @@ public class Player extends AI{
 	private int timer = -1;
 	
 	private static final float MOVE_VEL = 0.1f; 
+	private static final float SHIELD_VEL = 0.03f;
 	
 	Entity swordEntity = new Entity(new Component[] {
 		new Position(0,0),
-		new Box(-24,-24,48,48),
+		new Box(-20,-20,40,40),
 		new ColorC(Color.white),
 		new Sword()
 	});
@@ -50,9 +51,10 @@ public class Player extends AI{
 		RAY
 	}
 	
-	enum STATE {
+	public enum STATE {
 		WALKING,
 		SWORD,
+		SHIELD
 	}
 	
 	enum DIRECTION {
@@ -65,8 +67,12 @@ public class Player extends AI{
 	public Player(Controller controller) {
 		this.controller = controller;
 		button_a = ITEM.SWORD;
-		button_b = ITEM.NOTHING;
+		button_b = ITEM.SHIELD;
 		currentState = STATE.WALKING;
+	}
+	
+	public STATE getState() {
+		return currentState;
 	}
 	
 	@Override
@@ -79,8 +85,12 @@ public class Player extends AI{
 				if(timerIsDone()) enterState(STATE.WALKING);
 				break;
 			case WALKING:
-				setVelocityController();
+				setVelocityController(MOVE_VEL);
 				useItem();
+				break;
+			case SHIELD:
+				if(!itemHeld(ITEM.SHIELD)) enterState(STATE.WALKING);
+				setVelocityController(SHIELD_VEL);
 			default:
 				break;
 		}
@@ -93,6 +103,8 @@ public class Player extends AI{
 				break;
 			case WALKING:
 				break;
+			case SHIELD:
+				break;
 			default:
 				break;
 			
@@ -102,16 +114,16 @@ public class Player extends AI{
 				swordEntity.setParent(owner);
 				switch(facingDirection) {
 					case DOWN:
-						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-12,12));
+						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-16,16));
 						break;
 					case LEFT:
-						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-12,-12));
+						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-16,-16));
 						break;
 					case RIGHT:
-						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(12,-12));
+						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(16,-16));
 						break;
 					case UP:
-						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(12,-12));
+						swordEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(16,-16));
 						break;
 					default:
 						break;
@@ -121,6 +133,7 @@ public class Player extends AI{
 				break;
 			case WALKING:
 				break;
+			case SHIELD:
 			default:
 				break;
 			
@@ -132,6 +145,15 @@ public class Player extends AI{
 		if(controller.buttonPressed(BUTTON.KEY_A) && button_a == I) {
 			return true;
 		} else if(controller.buttonPressed(BUTTON.KEY_B) && button_b == I) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean itemHeld(ITEM I) {
+		if(controller.buttonHeld(BUTTON.KEY_A) && button_a == I) {
+			return true;
+		} else if(controller.buttonHeld(BUTTON.KEY_B) && button_b == I) {
 			return true;
 		}
 		return false;
@@ -165,6 +187,7 @@ public class Player extends AI{
 			case RAY:
 				break;
 			case SHIELD:
+				enterState(STATE.SHIELD);
 				break;
 			case STAFF:
 				break;
@@ -184,7 +207,7 @@ public class Player extends AI{
 		}
 	}
 	
-	private void setVelocityController() {
+	private void setVelocityController(float speed) {
 		Vector2f newVel = new Vector2f(0,0);
 		if(controller.buttonHeld(BUTTON.KEY_UP)) {
 			facingDirection = DIRECTION.UP;
@@ -207,8 +230,8 @@ public class Player extends AI{
 			newVel.normalise();
 		}
 		
-		newVel.x *= MOVE_VEL;
-		newVel.y *= MOVE_VEL;
+		newVel.x *= speed;
+		newVel.y *= speed;
 		
 		Result<Component, NoSuchElementException> velResult = owner.getTraitByID(TRAIT.VELOCITY);
 		if(velResult.is_ok()) {
