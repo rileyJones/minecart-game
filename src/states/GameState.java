@@ -10,7 +10,11 @@ import org.newdawn.slick.state.StateBasedGame;
 import ai.Enemy;
 import ai.Kart;
 import ai.Player;
+import color.CNAME;
+import color.CTYPE;
+import color.ColorSelector;
 import components.*;
+import controller.BUTTON;
 import ecs.*;
 import etc.ptr;
 import game.MinecartGame;
@@ -30,20 +34,24 @@ public class GameState extends BasicGameState {
 	Entity kart;
 	
 	ptr<Integer> HP;
+	Player pAI;
 	
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		super.enter(container, game);
+		pAI.button_b = ((MinecartGame)game).button_b;
+		pAI.button_a = ((MinecartGame)game).button_a;
 	}
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		world = new Entity(new Component[] {});
+		pAI = new Player(((MinecartGame)game).controller, world);
 		Entity player = new Entity(new Component[] {
 				new Position(12+18*24,12+16*24),
 				new Box(-10,-10,20,20),
 				new ColorC(Color.blue),
-				new Player(((MinecartGame)game).controller, world),
+				pAI,
 				new Velocity(0,0)
 			}); 
 		HP = new ptr<Integer>(6);
@@ -158,7 +166,7 @@ public class GameState extends BasicGameState {
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.setBackground(Color.green);
+		g.setBackground(ColorSelector.get().getColor(CNAME.ORANGE, CTYPE.LIGHT, true, false));
 		for(RenderSystem r: renderers) {
 			r.renderWorld(world, container, game, g);
 		}
@@ -172,6 +180,9 @@ public class GameState extends BasicGameState {
 		if(HP.V <= 0) {
 			init(container, game);
 			game.enterState(1);
+		}
+		if(((MinecartGame)game).controller.buttonPressed(BUTTON.KEY_PAUSE)) {
+			game.enterState(2);
 		}
 	}
 

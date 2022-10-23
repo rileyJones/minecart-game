@@ -50,14 +50,14 @@ public class Player extends AI{
 		new ColorC(Color.green)
 	});
 	
-	ITEM button_a;
-	ITEM button_b;
+	public ITEM button_a;
+	public ITEM button_b;
 	
 	STATE currentState;
 	
 	DIRECTION facingDirection;
 	
-	enum ITEM {
+	public enum ITEM {
 		NOTHING,
 		SWORD,
 		SHIELD,
@@ -85,7 +85,7 @@ public class Player extends AI{
 	public Player(Controller controller, Entity world) {
 		this.controller = controller;
 		button_a = ITEM.SWORD;
-		button_b = ITEM.RAY;
+		button_b = ITEM.SHIELD;
 		currentState = STATE.WALKING;
 		facingDirection = DIRECTION.DOWN;
 		tunnelEntity.setParent(world);
@@ -114,6 +114,7 @@ public class Player extends AI{
 			case SHIELD:
 				if(!itemHeld(ITEM.SHIELD)) enterState(STATE.WALKING);
 				setVelocityController(SHIELD_VEL);
+				break;
 			case JUMP:
 				setVelocityController(MOVE_VEL);
 				if(timerIsDone()) enterState(STATE.WALKING);
