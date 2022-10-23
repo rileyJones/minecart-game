@@ -24,6 +24,7 @@ public class Player extends AI{
 	private Controller controller;
 	
 	private int timer = -1;
+	private int staffIndex = 3;
 	
 	private static final float MOVE_VEL = 0.1f; 
 	private static final float SHIELD_VEL = 0.03f;
@@ -32,8 +33,16 @@ public class Player extends AI{
 		new Position(0,0),
 		new Box(-20,-20,40,40),
 		new ColorC(Color.white),
-		new Sword()
+		new Sword(),
+		new Velocity(0,0)
 	});
+	Entity staffEntity = new Entity(new Component[] {
+			new Position(0,0),
+			new Box(0,0,0,0),
+			new ColorC(Color.white),
+			new Staff(staffIndex),
+			new Velocity(0,0)
+		});
 	
 	ITEM button_a;
 	ITEM button_b;
@@ -55,7 +64,8 @@ public class Player extends AI{
 		WALKING,
 		SWORD,
 		SHIELD,
-		JUMP
+		JUMP,
+		STAFF
 	}
 	
 	enum DIRECTION {
@@ -68,7 +78,7 @@ public class Player extends AI{
 	public Player(Controller controller) {
 		this.controller = controller;
 		button_a = ITEM.SWORD;
-		button_b = ITEM.FEATHER;
+		button_b = ITEM.STAFF;
 		currentState = STATE.WALKING;
 		facingDirection = DIRECTION.DOWN;
 	}
@@ -99,6 +109,8 @@ public class Player extends AI{
 			case JUMP:
 				setVelocityController(MOVE_VEL);
 				if(timerIsDone()) enterState(STATE.WALKING);
+			case STAFF:
+				if(timerIsDone()) enterState(STATE.WALKING);
 			default:
 				break;
 		}
@@ -114,6 +126,9 @@ public class Player extends AI{
 			case SHIELD:
 				break;
 			case JUMP:
+				break;
+			case STAFF:
+				staffEntity.setParent(null);
 				break;
 			default:
 				break;
@@ -147,6 +162,30 @@ public class Player extends AI{
 				break;
 			case JUMP:
 				setTimer(1000);
+				break;
+			case STAFF:
+				staffEntity.setParent(owner);
+				staffIndex = (staffIndex+1)%4;
+				((Staff)staffEntity.getTraitByID(TRAIT.AI).unwrap()).setIndex(staffIndex);
+				((Staff)staffEntity.getTraitByID(TRAIT.AI).unwrap()).clearDidAct();
+				switch(facingDirection) {
+					case DOWN:
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(0,30));
+						break;
+					case LEFT:
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-30,0));
+						break;
+					case RIGHT:
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(30,0));
+						break;
+					case UP:
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(0,-30));
+						break;
+					default:
+						break;
+					
+				}
+				setTimer(500);
 				break;
 			default:
 				break;
@@ -205,6 +244,7 @@ public class Player extends AI{
 				enterState(STATE.SHIELD);
 				break;
 			case STAFF:
+				enterState(STATE.STAFF);
 				break;
 			case SWORD:
 				enterState(STATE.SWORD);

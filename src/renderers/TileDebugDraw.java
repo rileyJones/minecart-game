@@ -32,6 +32,10 @@ public class TileDebugDraw extends RenderSystem{
 			for(int y = 0; y < map.getHeight(); y++) {
 				Color color;
 				switch(map.getTile(x, y)) {
+					case BLOCK_SPECIAL_0:
+					case BLOCK_SPECIAL_1:
+					case BLOCK_SPECIAL_2:
+					case BLOCK_SPECIAL_3:
 					case BLOCK:
 						color = ColorSelector.get().getColor(CNAME.RED, CTYPE.LIGHT, true, true);
 						break;

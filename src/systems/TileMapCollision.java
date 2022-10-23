@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import ai.AI_TYPE;
 import ai.Player;
+import ai.Staff;
 import components.AI;
 import components.Box;
 import components.Position;
@@ -29,6 +30,7 @@ public class TileMapCollision extends TwoBodySystem {
 
 	ptr<Integer> HP;
 	boolean buttonPressed;
+	boolean buttonPressedLastFrame = false;
 	
 	public TileMapCollision(ptr<Integer> HP) {
 		this.HP = HP;
@@ -90,7 +92,18 @@ public class TileMapCollision extends TwoBodySystem {
 		for(int x = startX; x != endX; x+=dirX) {
 			for(int y = startY; y != endY; y+=dirY) {
 				switch(secondaryTileMap.getTile(x, y)) {
+					case BLOCK_SPECIAL_0:
+					case BLOCK_SPECIAL_1:
+					case BLOCK_SPECIAL_2:
+					case BLOCK_SPECIAL_3:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.SWORD) {
+							secondaryTileMap.setTile(x,y,TileMap.TILE.GROUND);
+						}
 					case BLOCK:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.SWORD || 
+								((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.STAFF ) {
+							continue;
+						}
 						Box secondaryBox = new Box(x*secondaryTileMap.getTileWidth(), y*secondaryTileMap.getTileHeight(), secondaryTileMap.getTileWidth(), secondaryTileMap.getTileHeight());
 						Physics.doSimpleCollision(primaryPos, primaryBox, new Velocity(primaryVelVec.x, primaryVelVec.y), secondaryPos, secondaryBox, new Velocity(0,0), delta);
 						break;
@@ -100,11 +113,62 @@ public class TileMapCollision extends TwoBodySystem {
 								continue;
 							}
 						}
-						buttonPressed = true;
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.PLAYER) {
+							buttonPressedLastFrame = true;
+						}
 						break;
 					case EMPTY:
 						break;
 					case GROUND:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.STAFF) {
+							Staff staff = (Staff) primary.getTraitByID(TRAIT.AI).unwrap();
+							if(staff.didAct()) {
+								continue;
+							}
+							staff.setDidAct();
+							switch(staff.index()) {
+								case 0:
+									for(int xa = 0; xa != secondaryTileMap.getWidth(); xa+=1) {
+										for(int ya = 0; ya != secondaryTileMap.getHeight(); ya+=1) {
+											if(secondaryTileMap.getTile(xa,ya) == TileMap.TILE.BLOCK_SPECIAL_0) {
+												secondaryTileMap.setTile(xa,ya,TileMap.TILE.GROUND);
+											}
+										}
+									}
+									secondaryTileMap.setTile(x,y,TileMap.TILE.BLOCK_SPECIAL_0);
+									break;
+								case 1:
+									for(int xa = 0; xa != secondaryTileMap.getWidth(); xa+=1) {
+										for(int ya = 0; ya != secondaryTileMap.getHeight(); ya+=1) {
+											if(secondaryTileMap.getTile(xa,ya) == TileMap.TILE.BLOCK_SPECIAL_1) {
+												secondaryTileMap.setTile(xa,ya,TileMap.TILE.GROUND);
+											}
+										}
+									}
+									secondaryTileMap.setTile(x,y,TileMap.TILE.BLOCK_SPECIAL_1);
+									break;
+								case 2:
+									for(int xa = 0; xa != secondaryTileMap.getWidth(); xa+=1) {
+										for(int ya = 0; ya != secondaryTileMap.getHeight(); ya+=1) {
+											if(secondaryTileMap.getTile(xa,ya) == TileMap.TILE.BLOCK_SPECIAL_2) {
+												secondaryTileMap.setTile(xa,ya,TileMap.TILE.GROUND);
+											}
+										}
+									}
+									secondaryTileMap.setTile(x,y,TileMap.TILE.BLOCK_SPECIAL_2);
+									break;
+								case 3:
+									for(int xa = 0; xa != secondaryTileMap.getWidth(); xa+=1) {
+										for(int ya = 0; ya != secondaryTileMap.getHeight(); ya+=1) {
+											if(secondaryTileMap.getTile(xa,ya) == TileMap.TILE.BLOCK_SPECIAL_3) {
+												secondaryTileMap.setTile(xa,ya,TileMap.TILE.GROUND);
+											}
+										}
+									}
+									secondaryTileMap.setTile(x,y,TileMap.TILE.BLOCK_SPECIAL_3);
+									break;
+							}
+						}
 						break;
 					case HOLE:
 						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.PLAYER) {
@@ -152,6 +216,9 @@ public class TileMapCollision extends TwoBodySystem {
 					case SPAWN_PLAYER:
 						break;
 					case TRACK_DL:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() != AI_TYPE.KART) {
+							continue;
+						}
 						if(primaryVelVec.x > 0 && primaryPosVec.x%24>12) {
 							primaryVel.set(new Velocity(0.0f,0.1f));
 						} else if(primaryVelVec.y < 0 && primaryPosVec.y%24<12){
@@ -159,6 +226,9 @@ public class TileMapCollision extends TwoBodySystem {
 						}
 						break;
 					case TRACK_DR:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() != AI_TYPE.KART) {
+							continue;
+						}
 						if(primaryVelVec.y < 0 && primaryPosVec.y%24<12) {
 							primaryVel.set(new Velocity(0.1f,0.0f));
 						} else if(primaryVelVec.x < 0 && primaryPosVec.x%24<12){
@@ -169,6 +239,9 @@ public class TileMapCollision extends TwoBodySystem {
 					case TRACK_HOR:
 						break;
 					case TRACK_STOP:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() != AI_TYPE.KART) {
+							continue;
+						}
 						try {
 							game.getCurrentState().init(container,game);
 						} catch (SlickException e) {
@@ -177,6 +250,9 @@ public class TileMapCollision extends TwoBodySystem {
 						game.enterState(1);
 						break;
 					case TRACK_SWAP:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() != AI_TYPE.KART) {
+							continue;
+						}
 						if(buttonPressed && primaryPosVec.x%24>10 && primaryPosVec.y%24<14) {
 							primaryVel.set(new Velocity(0.1f,0.0f));
 						} else if(primaryPosVec.x%24>10 && primaryPosVec.x%24<14){
@@ -184,6 +260,9 @@ public class TileMapCollision extends TwoBodySystem {
 						}
 						break;
 					case TRACK_UL:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() != AI_TYPE.KART) {
+							continue;
+						}
 						if(primaryVelVec.y > 0 && primaryPosVec.y%24>12) {
 							primaryVel.set(new Velocity(-0.1f,0.0f));
 						} else if(primaryVelVec.x > 0 && primaryPosVec.x%24>12){
@@ -192,6 +271,9 @@ public class TileMapCollision extends TwoBodySystem {
 						
 						break;
 					case TRACK_UR:
+						if(primary.getTraitByID(TRAIT.AI).is_ok() && ((AI)primary.getTraitByID(TRAIT.AI).unwrap()).getType() != AI_TYPE.KART) {
+							continue;
+						}
 						if(primaryVelVec.x < 0 && primaryPosVec.x%24<12) {
 							primaryVel.set(new Velocity(0.0f,-0.1f));
 						} else if(primaryVelVec.y > 0 && primaryPosVec.y%24>12){
@@ -213,6 +295,7 @@ public class TileMapCollision extends TwoBodySystem {
 
 	@Override
 	protected boolean test(Entity primary, Entity secondary) {
+		buttonPressedLastFrame = false;
 		Position primaryPos = (Position) primary.getTraitByID(TRAIT.POSITION).unwrap();
 		Box primaryBox = (Box) primary.getTraitByID(TRAIT.BOX).unwrap();
 		
@@ -247,7 +330,7 @@ public class TileMapCollision extends TwoBodySystem {
 
 	@Override
 	protected boolean testSecondary(Entity secondary) {
-		buttonPressed = false;
+		buttonPressed = buttonPressedLastFrame;
 		Result<Component, NoSuchElementException> tileMapTrait = secondary.getTraitByID(TRAIT.TILEMAP);
 		Result<Component, NoSuchElementException> posTrait = secondary.getTraitByID(TRAIT.POSITION);
 		return tileMapTrait.is_ok() && posTrait.is_ok();
