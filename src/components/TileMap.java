@@ -24,7 +24,11 @@ public class TileMap extends Component{
 		SPAWN_PLAYER,	//C
 		SPAWN_ENEMY,	//D
 		HOLE,			//E
-		BUTTON			//F
+		BUTTON,			//F
+		BLOCK_SPECIAL_0,//G
+		BLOCK_SPECIAL_1,//H
+		BLOCK_SPECIAL_2,//I
+		BLOCK_SPECIAL_3,//J
 	}
 	
 	TILE[][] tiles;

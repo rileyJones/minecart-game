@@ -10,6 +10,9 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.AI_TYPE;
+import ai.Player;
+import components.AI;
 import components.Box;
 import components.Position;
 import components.ColorC;
@@ -27,6 +30,12 @@ public class DebugDraw extends RenderSystem {
 		Rectangle rect = ((Box)(e.getTraitByID(TRAIT.BOX).unwrap().getValue())).getBox().unwrap();
 		Color col = ((ColorC)(e.getTraitByID(TRAIT.COLOR).unwrap().getValue())).getColor().unwrap();
 		Color oldColor = g.getColor();
+		if(e.getTraitByID(TRAIT.AI).is_ok() && ((AI)e.getTraitByID(TRAIT.AI).unwrap()).getType() == AI_TYPE.PLAYER) {
+			if(((Player)e.getTraitByID(TRAIT.AI).unwrap()).getState() == Player.STATE.JUMP) {
+				rect.setY(rect.getY() - 20);
+			}
+		}
+		
 		g.setColor(col);
 		g.fill(new Rectangle(pos.x+rect.getX(), pos.y + rect.getY(), rect.getWidth(), rect.getHeight()));
 		g.setColor(oldColor);

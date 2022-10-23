@@ -24,7 +24,10 @@ public class Entity {
 		for(Component c: traits) {
 			c.setOwner(this);
 		}
-		this.children = children;
+		this.children = new ArrayList<Entity>();
+		for(Entity child: children) {
+			child.setParent(this);
+		}
 	}
 	
 	public Entity closestCommonParent(Entity other) {

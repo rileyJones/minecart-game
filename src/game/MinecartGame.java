@@ -7,10 +7,12 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ai.Player;
 import color.ColorSelector;
 import controller.Controller;
 import states.GameOverState;
 import states.GameState;
+import states.InventoryState;
 
 public class MinecartGame extends StateBasedGame {
 
@@ -18,6 +20,9 @@ public class MinecartGame extends StateBasedGame {
 	@SuppressWarnings("unused")
 	private ColorSelector color_selector;
 	private static final int scale = 1;
+	
+	public Player.ITEM button_b = Player.ITEM.SHIELD;
+	public Player.ITEM button_a = Player.ITEM.SWORD;
 	
 	public MinecartGame(String name) {
 		super(name);
@@ -31,6 +36,7 @@ public class MinecartGame extends StateBasedGame {
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new GameState());
 		addState(new GameOverState());
+		addState(new InventoryState());
 	}
 	
 	@Override
