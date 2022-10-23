@@ -170,16 +170,16 @@ public class Player extends AI{
 				((Staff)staffEntity.getTraitByID(TRAIT.AI).unwrap()).clearDidAct();
 				switch(facingDirection) {
 					case DOWN:
-						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(0,30));
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(0,34f));
 						break;
 					case LEFT:
-						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-30,0));
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(-34f,0));
 						break;
 					case RIGHT:
-						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(30,0));
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(34f,0));
 						break;
 					case UP:
-						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(0,-30));
+						staffEntity.getTraitByID(TRAIT.POSITION).unwrap().set(new Position(0,-34f));
 						break;
 					default:
 						break;
