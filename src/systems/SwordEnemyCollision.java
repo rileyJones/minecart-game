@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import ai.AI_TYPE;
+import ai.Sword;
 import components.AI;
 import components.Box;
 import components.Position;
@@ -35,6 +36,9 @@ public class SwordEnemyCollision extends TwoBodySystem {
 		if(secondaryTimer.isDone()) {
 			Physics.doOffsetLaunch(secondaryPos, secondaryVel, primaryPPos, 0.5f);
 			secondaryTimer.reset();
+			if(((Sword)primary.getTraitByID(TRAIT.AI).unwrap()).getGale()) {
+				secondary.getParent().setParent(null);
+			}
 		}
 		
 	}

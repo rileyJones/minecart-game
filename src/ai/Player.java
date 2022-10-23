@@ -7,6 +7,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import color.CNAME;
+import color.CTYPE;
+import color.ColorSelector;
 import components.AI;
 import components.Box;
 import components.ColorC;
@@ -24,6 +27,7 @@ public class Player extends AI{
 	private Controller controller;
 	
 	private int timer = -1;
+	private int spiceTimer = -1;
 	private int staffIndex = 3;
 	
 	private static final float MOVE_VEL = 0.1f; 
@@ -63,7 +67,9 @@ public class Player extends AI{
 		SHIELD,
 		FEATHER,
 		STAFF,
-		RAY
+		RAY,
+		SPICES,
+		GALE
 	}
 	
 	public enum STATE {
@@ -81,6 +87,7 @@ public class Player extends AI{
 		RIGHT,
 		DOWN
 	}
+	private boolean doGale = false;
 	
 	public Player(Controller controller, Entity world) {
 		this.controller = controller;
@@ -98,6 +105,7 @@ public class Player extends AI{
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		updateTimer(delta);
+		spice_updateTimer(delta);
 		resetVelocity();
 		switch(currentState) {
 			case SWORD:
@@ -130,6 +138,7 @@ public class Player extends AI{
 	public void enterState(STATE S) {
 		switch(currentState) {
 			case SWORD:
+				doGale = false;
 				swordEntity.setParent(null);
 				break;
 			case WALKING:
@@ -149,6 +158,15 @@ public class Player extends AI{
 		}
 		switch(S) {
 			case SWORD:
+				if(doGale) {
+					swordEntity.getTraitByID(TRAIT.COLOR).unwrap().set(new ColorC(
+							ColorSelector.get().getColor(CNAME.TEAL, CTYPE.FADED, false, true)
+							));
+					((Sword)swordEntity.getTraitByID(TRAIT.AI).unwrap()).setGale(true);
+				} else {
+					swordEntity.getTraitByID(TRAIT.COLOR).unwrap().set(new ColorC(Color.lightGray));
+					((Sword)swordEntity.getTraitByID(TRAIT.AI).unwrap()).setGale(false);
+				}
 				swordEntity.setParent(owner);
 				switch(facingDirection) {
 					case DOWN:
@@ -292,6 +310,17 @@ public class Player extends AI{
 		return timer <= 0;
 	}
 	
+	private void spice_setTimer(int time) {
+		spiceTimer = time;
+	}
+	private boolean spice_updateTimer(int delta) {
+		spiceTimer = Math.max(-1,spiceTimer-delta);
+		return spiceTimer <= 0;
+	}
+	private boolean spice_timerIsDone() {
+		return spiceTimer <= 0;
+	}
+	
 	private void useItem() {
 		ITEM itemUsed = ITEM.NOTHING;
 		
@@ -316,8 +345,13 @@ public class Player extends AI{
 			case STAFF:
 				enterState(STATE.STAFF);
 				break;
+			case GALE:
+				doGale = true;
 			case SWORD:
 				enterState(STATE.SWORD);
+				break;
+			case SPICES:
+				spice_setTimer(10000);
 				break;
 			default:
 				break;
@@ -333,6 +367,9 @@ public class Player extends AI{
 	}
 	
 	private void setVelocityController(float speed) {
+		if(!spice_timerIsDone()) {
+			speed *= 2f;
+		}
 		Vector2f newVel = new Vector2f(0,0);
 		if(controller.buttonHeld(BUTTON.KEY_UP)) {
 			facingDirection = DIRECTION.UP;

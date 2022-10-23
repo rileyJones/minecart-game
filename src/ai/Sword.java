@@ -8,6 +8,8 @@ import ecs.Component;
 
 public class Sword extends AI {
 
+	private boolean gale = false;;
+	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		
@@ -22,5 +24,12 @@ public class Sword extends AI {
 	public Component clone() {
 		return new Sword();
 	}
-
+	
+	void setGale(boolean b) {
+		gale = b;
+	}
+	
+	public boolean getGale() {
+		return gale;
+	}
 }

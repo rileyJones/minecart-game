@@ -39,6 +39,9 @@ public class InventoryState extends BasicGameState {
 		
 		int o = 0;
 		for(Player.ITEM I: Player.ITEM.values()) {
+			if(I == Player.ITEM.GALE) {
+				continue;
+			}
 			int x = o%2;
 			int y = o/2+1;
 			if(o == pos) {
@@ -53,27 +56,31 @@ public class InventoryState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		MinecartGame mGame = (MinecartGame) game;
-		if(mGame.controller.buttonPressed(BUTTON.KEY_PAUSE)) {
+		if(mGame.controller.buttonPressed(BUTTON.KEY_PAUSE) &&
+				!mGame.controller.buttonHeld(BUTTON.KEY_A) &&
+				!mGame.controller.buttonHeld(BUTTON.KEY_B)) {
 			game.enterState(0);
 		}
 		if(mGame.controller.buttonPressed(BUTTON.KEY_LEFT)) {
-			pos = (pos+Player.ITEM.values().length-1)%Player.ITEM.values().length;
+			pos = (pos+Player.ITEM.values().length-1-1)%(Player.ITEM.values().length-1);
 		}
 		if(mGame.controller.buttonPressed(BUTTON.KEY_RIGHT)) {
-			pos = (pos+Player.ITEM.values().length+1)%Player.ITEM.values().length;		
+			pos = (pos+Player.ITEM.values().length-1+1)%(Player.ITEM.values().length-1);		
 		}
 		if(mGame.controller.buttonPressed(BUTTON.KEY_UP)) {
-			pos = (pos+Player.ITEM.values().length-2)%Player.ITEM.values().length;
+			pos = (pos+Player.ITEM.values().length-1-2)%(Player.ITEM.values().length-1);
 		}
 		if(mGame.controller.buttonPressed(BUTTON.KEY_DOWN)) {
-			pos = (pos+Player.ITEM.values().length+2)%Player.ITEM.values().length;
+			pos = (pos+Player.ITEM.values().length-1+2)%(Player.ITEM.values().length-1);
 		}
 		if(mGame.controller.buttonPressed(BUTTON.KEY_B)) {
 			mGame.button_b = Player.ITEM.values()[pos];
 		}
 		if(mGame.controller.buttonPressed(BUTTON.KEY_A)) {
-			System.out.println("A");
 			mGame.button_a = Player.ITEM.values()[pos];
+		}
+		if(mGame.controller.buttonPressed(BUTTON.KEY_PAUSE)) {
+			pos = Player.ITEM.values().length-1;
 		}
 	}
 
