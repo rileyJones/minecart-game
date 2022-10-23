@@ -54,14 +54,14 @@ public class Physics {
 				)))-0.001f;
 	}
 	
-	private enum DIRECTION {
+	public enum DIRECTION {
 		X_MINUS,
 		X_PLUS,
 		Y_MINUS,
 		Y_PLUS
 	}
 	
-	private static DIRECTION getBoxCollideDirection(Rectangle aRect, Vector2f aVel, Rectangle bRect, Vector2f bVel) {
+	public static DIRECTION getBoxCollideDirection(Rectangle aRect, Vector2f aVel, Rectangle bRect, Vector2f bVel) {
 		float xp = (aRect.getMaxX()-bRect.getMinX())/(bVel.x-aVel.x);
 		float xm = (aRect.getMinX()-bRect.getMaxX())/(bVel.x-aVel.x);
 		float yp = (aRect.getMaxY()-bRect.getMinY())/(bVel.y-aVel.y);

@@ -43,7 +43,7 @@ public class GameState extends BasicGameState {
 				new Position(12+18*24,12+16*24),
 				new Box(-10,-10,20,20),
 				new ColorC(Color.blue),
-				new Player(((MinecartGame)game).controller),
+				new Player(((MinecartGame)game).controller, world),
 				new Velocity(0,0)
 			}); 
 		HP = new ptr<Integer>(6);
@@ -144,6 +144,7 @@ public class GameState extends BasicGameState {
 			new TileMapCollision(HP),
 			new PlayerEnemyCollision(HP),
 			new TileMapCollision(HP),
+			new TunnelCollideSystem(),
 			new FrictionSystem(),
 			new SpawnEnemiesSystem(spawnGroup),
 		};

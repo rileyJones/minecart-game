@@ -43,6 +43,12 @@ public class Player extends AI{
 			new Staff(staffIndex),
 			new Velocity(0,0)
 		});
+	Entity tunnelEntity = new Entity(new Component[] {
+		new Tunnel(),
+		new Position(0,0),
+		new Box(0,0,0,0),
+		new ColorC(Color.green)
+	});
 	
 	ITEM button_a;
 	ITEM button_b;
@@ -65,7 +71,8 @@ public class Player extends AI{
 		SWORD,
 		SHIELD,
 		JUMP,
-		STAFF
+		STAFF,
+		RAY
 	}
 	
 	enum DIRECTION {
@@ -75,12 +82,13 @@ public class Player extends AI{
 		DOWN
 	}
 	
-	public Player(Controller controller) {
+	public Player(Controller controller, Entity world) {
 		this.controller = controller;
 		button_a = ITEM.SWORD;
-		button_b = ITEM.STAFF;
+		button_b = ITEM.RAY;
 		currentState = STATE.WALKING;
 		facingDirection = DIRECTION.DOWN;
+		tunnelEntity.setParent(world);
 	}
 	
 	public STATE getState() {
@@ -111,6 +119,8 @@ public class Player extends AI{
 				if(timerIsDone()) enterState(STATE.WALKING);
 			case STAFF:
 				if(timerIsDone()) enterState(STATE.WALKING);
+			case RAY:
+				if(timerIsDone()) enterState(STATE.WALKING);
 			default:
 				break;
 		}
@@ -129,6 +139,8 @@ public class Player extends AI{
 				break;
 			case STAFF:
 				staffEntity.setParent(null);
+				break;
+			case RAY:
 				break;
 			default:
 				break;
@@ -187,6 +199,62 @@ public class Player extends AI{
 				}
 				setTimer(500);
 				break;
+			case RAY:
+				Vector2f pos = ((Position)owner.getTraitByID(TRAIT.POSITION).unwrap().getValue()).getPos().unwrap();
+				Box tBox = ((Box)tunnelEntity.getTraitByID(TRAIT.BOX).unwrap());
+				Tunnel tTun = ((Tunnel)tunnelEntity.getTraitByID(TRAIT.AI).unwrap());
+				switch(facingDirection) {
+					case DOWN:
+						if(pos.y > 23*24) {
+							return;
+						}
+						tTun.setIsVertical(true);
+						tBox.set(new Box(
+								(float) (24*Math.round((pos.x - 12)/24f)),
+								(float) (24*Math.ceil((pos.y+24)/24f)),
+								24,
+								(float) (22*24-24*Math.ceil((pos.y-24)/24f))
+							));
+						break;
+					case LEFT:
+						if(pos.x < 6*24) {
+							return;
+						}
+						tTun.setIsVertical(false);
+						tBox.set(new Box(
+								5*24, 
+								(float) (24*Math.round((pos.y - 12)/24f)) , 
+								(float) (24*Math.ceil((pos.x-24)/24f)-5*24-24), 
+								24));
+						break;
+					case RIGHT:
+						if(pos.x > 31*24) {
+							return;
+						}
+						tTun.setIsVertical(false);
+						tBox.set(new Box(
+								(float) (24*Math.ceil((pos.x+24)/24f)), 
+								(float) (24*Math.round((pos.y - 12)/24f)) , 
+								(float) (32*24-24*Math.ceil((pos.x-24)/24f)-48), 
+								24));
+						break;
+					case UP:
+						if(pos.y < 10*24) {
+							return;
+						}
+						tTun.setIsVertical(true);
+						tBox.set(new Box(
+								(float) (24*Math.round((pos.x - 12)/24f)),
+								9*24,
+								24,
+								(float) (24*Math.ceil((pos.y-24)/24f)-9*24-24)
+							));
+						break;
+					default:
+						break;
+				}
+				setTimer(200);
+				break;
 			default:
 				break;
 			
@@ -239,6 +307,7 @@ public class Player extends AI{
 			case NOTHING:
 				break;
 			case RAY:
+				enterState(STATE.RAY);
 				break;
 			case SHIELD:
 				enterState(STATE.SHIELD);
@@ -296,7 +365,7 @@ public class Player extends AI{
 
 	@Override
 	public Component clone() {
-		return new Player(controller);
+		return new Player(controller, null);
 	}
 	
 	@Override

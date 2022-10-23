@@ -5,5 +5,6 @@ public enum AI_TYPE {
 	ENEMY, 
 	KART, 
 	SWORD, 
-	STAFF
+	STAFF, 
+	TUNNEL
 }
