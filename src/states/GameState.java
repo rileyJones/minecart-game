@@ -193,6 +193,9 @@ public class GameState extends BasicGameState {
 		if(((MinecartGame)game).controller.buttonPressed(BUTTON.KEY_PAUSE)) {
 			game.enterState(2);
 		}
+		if(waveNumber.V%5 != 0) {
+			System.out.println(waveNumber.V);
+		}
 	}
 	
 	@Override
