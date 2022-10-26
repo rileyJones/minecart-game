@@ -160,7 +160,9 @@ public class GameState extends BasicGameState {
 			new TileMapCollision(HP),
 			new TunnelCollideSystem(),
 			new FrictionSystem(),
+			new PlayerHeartCollision(HP),
 			new SpawnEnemiesSystem(spawnGroup, waveNumber),
+			new AfterWaveSystem(waveNumber)
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(showPaths),

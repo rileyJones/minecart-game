@@ -30,7 +30,7 @@ public class DrawWaveNumber extends RenderSystem{
 	protected void render(Entity e, GameContainer container, StateBasedGame game, Graphics g) {
 		org.newdawn.slick.Font oldFont = g.getFont();
 		g.setFont(bigFont);
-		g.drawString((waveNumber.V/4)+"", 24*30, 24-12);
+		g.drawString((waveNumber.V/5)+"", 24*30, 24-12);
 		g.setFont(oldFont);
 	}
 
