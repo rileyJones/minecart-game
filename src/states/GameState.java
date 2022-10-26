@@ -21,6 +21,7 @@ import game.MinecartGame;
 import renderers.DebugDraw;
 import renderers.DebugHP;
 import renderers.DebugItems;
+import renderers.DrawWaveNumber;
 import renderers.TileDebugDraw;
 import systems.*;
 
@@ -34,8 +35,9 @@ public class GameState extends BasicGameState {
 	Entity kart;
 	
 	ptr<Integer> HP;
+	ptr<Integer> waveNumber;
 	Player pAI;
-	ptr<Boolean> showPaths = new ptr(false);
+	ptr<Boolean> showPaths = new ptr<Boolean>(false);
 	
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -56,6 +58,7 @@ public class GameState extends BasicGameState {
 				new Velocity(0,0)
 			}); 
 		HP = new ptr<Integer>(6);
+		waveNumber = new ptr<Integer>(0);
 		
 		Entity tilemap = new Entity(new Component[] {
 			new Position(0,0),
@@ -157,12 +160,15 @@ public class GameState extends BasicGameState {
 			new TileMapCollision(HP),
 			new TunnelCollideSystem(),
 			new FrictionSystem(),
-			new SpawnEnemiesSystem(spawnGroup),
+			new PlayerHeartCollision(HP),
+			new SpawnEnemiesSystem(spawnGroup, waveNumber),
+			new AfterWaveSystem(waveNumber)
 		};
 		renderers = new RenderSystem[] {
 				new TileDebugDraw(showPaths),
 				new DebugDraw(),
 				new DebugHP(HP),
+				new DrawWaveNumber(waveNumber),
 				new DebugItems()
 		};
 	}
@@ -186,6 +192,9 @@ public class GameState extends BasicGameState {
 		}
 		if(((MinecartGame)game).controller.buttonPressed(BUTTON.KEY_PAUSE)) {
 			game.enterState(2);
+		}
+		if(waveNumber.V%5 != 0) {
+			System.out.println(waveNumber.V);
 		}
 	}
 	

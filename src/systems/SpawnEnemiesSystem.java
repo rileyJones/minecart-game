@@ -11,13 +11,16 @@ import ecs.Entity;
 import ecs.OneBodySystem;
 import ecs.Result;
 import ecs.TRAIT;
+import etc.ptr;
 
 public class SpawnEnemiesSystem extends OneBodySystem{
 
 	Entity spawnGroup;
+	ptr<Integer> waveNumber;
 	
-	public SpawnEnemiesSystem(Entity spawnGroup) {
+	public SpawnEnemiesSystem(Entity spawnGroup, ptr<Integer> waveNumber) {
 		this.spawnGroup = spawnGroup;
+		this.waveNumber = waveNumber;
 	}
 
 	@Override
@@ -26,6 +29,7 @@ public class SpawnEnemiesSystem extends OneBodySystem{
 		if(spawnerTraitR.is_ok()) {
 			Spawner eSpawner = (Spawner) spawnerTraitR.unwrap();
 			eSpawner.spawn();
+			waveNumber.V++;
 		}
 	}
 
