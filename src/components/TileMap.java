@@ -31,7 +31,21 @@ public class TileMap extends Component{
 		BLOCK_SPECIAL_3,//J
 	}
 	
+	public enum DIRECTION {
+		NONE,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+		UP_LEFT,
+		UP_RIGHT,
+		DOWN_LEFT,
+		DOWN_RIGHT,
+	}
+	
 	TILE[][] tiles;
+	public DIRECTION[][] paths;
+	public double[][] distance;
 	
 	public TileMap(int width, int height, float tileWidth, float tileHeight) {
 		this.width = width;
@@ -39,6 +53,8 @@ public class TileMap extends Component{
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		tiles = new TILE[width][height];
+		paths = new DIRECTION[width][height];
+		distance = new double[width][height];
 	}
 	public TileMap(float tileWidth, float tileHeight, int width, int[] tiles) {
 		this.tileWidth = tileWidth;
@@ -51,6 +67,8 @@ public class TileMap extends Component{
 				this.tiles[x][y] = TILE.values()[tiles[x+width*y]];
 			}
 		}
+		paths = new DIRECTION[width][height];
+		distance = new double[width][height];
 	}
 	
 	public int getWidth() {

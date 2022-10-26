@@ -23,7 +23,6 @@ public class Tunnel extends AI {
 
 	@Override
 	public AI_TYPE getType() {
-		// TODO Auto-generated method stub
 		return AI_TYPE.TUNNEL;
 	}
 

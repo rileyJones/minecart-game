@@ -35,6 +35,7 @@ public class GameState extends BasicGameState {
 	
 	ptr<Integer> HP;
 	Player pAI;
+	ptr<Boolean> showPaths = new ptr(false);
 	
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -56,7 +57,7 @@ public class GameState extends BasicGameState {
 			}); 
 		HP = new ptr<Integer>(6);
 		
-		world.addChild(new Entity(new Component[] {
+		Entity tilemap = new Entity(new Component[] {
 			new Position(0,0),
 			new TileMap(24, 24, 37, new int[] {
 					1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1 ,1 ,1 ,1,1,1,1,1,1 ,1,1,1,1,1,1,1,1 ,1,1,1,1,
@@ -88,7 +89,8 @@ public class GameState extends BasicGameState {
 					2,4,2,2,2 ,2,2,2,2,2,2,2,2 ,2,2,2,2 ,2 ,2 ,2,2,2,2,2,2 ,2,2,2,2,2,2,2,2 ,2,2,4,2,
 					2,9,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,5,5 ,5 ,5 ,5,5,5,5,5,5 ,5,5,5,5,5,5,5,5 ,5,5,8,2,
 			})
-		}));
+		});
+		world.addChild(tilemap);
 		
 		Entity enemyPrototype = new Entity( new Component[] {
 			new Position(0,0),
@@ -98,7 +100,7 @@ public class GameState extends BasicGameState {
 			new Position(0,0),
 			new Box(-10,-10,20,20),
 			new ColorC(Color.red),
-			new Enemy(player, 0.03f),
+			new Enemy(tilemap, 0.03f),
 			new Velocity(0,0)
 		}));
 		//*/
@@ -145,6 +147,7 @@ public class GameState extends BasicGameState {
 		
 		systems = new ECS_System[] {
 			new UpdateTimers(),
+			new PathingSystem(),
 			new AISystem(),
 			new CollideClipSystem(),
 			new SwordEnemyCollision(),
@@ -157,7 +160,7 @@ public class GameState extends BasicGameState {
 			new SpawnEnemiesSystem(spawnGroup),
 		};
 		renderers = new RenderSystem[] {
-				new TileDebugDraw(),
+				new TileDebugDraw(showPaths),
 				new DebugDraw(),
 				new DebugHP(HP),
 				new DebugItems()
@@ -183,6 +186,14 @@ public class GameState extends BasicGameState {
 		}
 		if(((MinecartGame)game).controller.buttonPressed(BUTTON.KEY_PAUSE)) {
 			game.enterState(2);
+		}
+	}
+	
+	@Override
+	public void keyPressed(int key, char c) {
+		super.keyPressed(key, c);
+		if(c == '`') {
+			showPaths.V = !showPaths.V;
 		}
 	}
 
