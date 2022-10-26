@@ -47,7 +47,7 @@ public class Player extends AI{
 			new Staff(staffIndex),
 			new Velocity(0,0)
 		});
-	Entity tunnelEntity = new Entity(new Component[] {
+	public Entity tunnelEntity = new Entity(new Component[] {
 		new Tunnel(),
 		new Position(0,0),
 		new Box(0,0,0,0),

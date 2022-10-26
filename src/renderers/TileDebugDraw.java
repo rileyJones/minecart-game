@@ -19,9 +19,16 @@ import ecs.Entity;
 import ecs.RenderSystem;
 import ecs.Result;
 import ecs.TRAIT;
+import etc.ptr;
 
 public class TileDebugDraw extends RenderSystem{
 
+	ptr<Boolean> showPaths;
+	
+	public TileDebugDraw(ptr<Boolean> showPaths) {
+		this.showPaths = showPaths;
+	}
+	
 	@Override
 	protected void render(Entity e, GameContainer container, StateBasedGame game, Graphics g) {
 		TileMap map = (TileMap) e.getTraitByID(TRAIT.TILEMAP).unwrap();
@@ -82,7 +89,55 @@ public class TileDebugDraw extends RenderSystem{
 				g.setColor(color);
 				g.fill(new Rectangle(posVec.x + x*map.getTileWidth(), posVec.y + y*map.getTileHeight(),
 						map.getTileWidth(), map.getTileHeight()));
+				g.setColor(Color.black);
+				if(!showPaths.V) continue;
+				g.draw(new Rectangle(posVec.x + x*map.getTileWidth(), posVec.y + y*map.getTileHeight(),
+						map.getTileWidth(), map.getTileHeight()));
+				if(map.paths[x][y] != null) {
+					switch(map.paths[x][y]) {
+						case DOWN:
+							g.fill(new Rectangle(posVec.x + (x+1/3f)*map.getTileWidth(), posVec.y + (y+2/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case DOWN_LEFT:
+							g.fill(new Rectangle(posVec.x + (x+0/3f)*map.getTileWidth(), posVec.y + (y+2/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case DOWN_RIGHT:
+							g.fill(new Rectangle(posVec.x + (x+2/3f)*map.getTileWidth(), posVec.y + (y+2/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case LEFT:
+							g.fill(new Rectangle(posVec.x + (x+0/3f)*map.getTileWidth(), posVec.y + (y+1/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case NONE:
+							g.fill(new Rectangle(posVec.x + (x+1/3f)*map.getTileWidth(), posVec.y + (y+1/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case RIGHT:
+							g.fill(new Rectangle(posVec.x + (x+2/3f)*map.getTileWidth(), posVec.y + (y+1/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case UP:
+							g.fill(new Rectangle(posVec.x + (x+1/3f)*map.getTileWidth(), posVec.y + (y+0/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case UP_LEFT:
+							g.fill(new Rectangle(posVec.x + (x+0/3f)*map.getTileWidth(), posVec.y + (y+0/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						case UP_RIGHT:
+							g.fill(new Rectangle(posVec.x + (x+2/3f)*map.getTileWidth(), posVec.y + (y+0/3f)*map.getTileHeight(),
+									map.getTileWidth()/3f, map.getTileHeight()/3f));
+							break;
+						default:
+							break;
+						
+					}
+				}
 			}
+			
 		}
 		g.setColor(oldColor);
 	}
